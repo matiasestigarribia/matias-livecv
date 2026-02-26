@@ -11,13 +11,13 @@
             {%- set hl = profile.headline.get(lang, profile.headline.get('en', {})) if profile.headline is mapping else {} -%}
             <div class="space-y-2 text-xl text-text-secondary font-mono">
                 <p>
-                    <span class="text-accent-cyan">></span> System:
+                    <span class="text-accent-cyan">></span>System:
                     <span class="text-text-primary">
                         {{- hl.get('system', hl.get('System', '')) -}}
                     </span>
                 </p>
                 <p>
-                    <span class="text-accent-cyan">></span> Status:
+                    <span class="text-accent-cyan">></span>Status:
                     <span class="text-accent-green">
                         {{- hl.get('status', '') -}}
                     </span>

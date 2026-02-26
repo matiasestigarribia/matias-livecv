@@ -246,14 +246,15 @@ async def contact_form(
     path='/chat',
     response_class=HTMLResponse
 )
-async def ai_chat_interface(request: Request):
+async def ai_chat_interface(request: Request, lang: str = Query(default='en')):
     """AI chat modal interface"""
     context = {
-        'request': request
+        'request': request,
+        'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/chat_modal.html', context)
-        
+
     context['active_fragment'] = 'fragments/chat_modal.html'
     return templates.TemplateResponse('index.html', context)

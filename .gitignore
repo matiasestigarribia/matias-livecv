@@ -35,4 +35,5 @@ Thumbs.db
 .claude
 
 tailwindcss-linux-x64
-
+libnspr4_2%3a4.35-1.1build1_amd64.deb
+patchelf_0.18.0-1.1build1_amd64.deb

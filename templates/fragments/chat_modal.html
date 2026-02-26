@@ -1,5 +1,8 @@
 <!-- Chat Modal - Full Screen AI Interface -->
-<div class="fixed inset-0 z-50 bg-dark-deep/95 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in">
+<div id="chat-modal-inner"
+    class="fixed inset-0 z-50 bg-dark-deep/95 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in"
+    data-i18n-just-now="{% if lang == 'pt' %}Agora mesmo{% elif lang == 'es' %}Ahora mismo{% else %}Just now{% endif %}"
+    data-i18n-error="{% if lang == 'pt' %}⚠️ Estou tendo problemas para conectar agora. Por favor, tente novamente em um momento.{% elif lang == 'es' %}⚠️ Estoy teniendo problemas para conectarme ahora. Por favor, intenta de nuevo en un momento.{% else %}⚠️ I'm having trouble connecting right now. Please try again in a moment.{% endif %}">
 
     <!-- Chat Container -->
     <div
@@ -87,7 +90,9 @@
 
         <!-- Input Area -->
         <!-- NOTE: HTMX removed — streaming requires native fetch + ReadableStream -->
-        <form id="chat-form" class="p-6 bg-dark-mid border-t border-accent-cyan/10">
+        <!-- onsubmit="return false" is a safety-net: prevents page navigation if the
+             JS event listener is not yet attached (e.g. HTMX script execution timing). -->
+        <form id="chat-form" action="javascript:void(0);" onsubmit="return false;" class="p-6 bg-dark-mid border-t border-accent-cyan/10">
 
             <!-- Hidden language input -->
             <input type="hidden" name="language" id="chat-language" value="{{ lang }}">
@@ -99,7 +104,7 @@
                     class="flex-1 px-4 py-3 bg-dark-elevated border border-accent-cyan/20 rounded-xl text-text-primary placeholder-text-tertiary focus:outline-none focus:border-accent-cyan focus:ring-2 focus:ring-accent-cyan/20 transition-all">
 
                 <!-- Send Button -->
-                <button type="submit" id="chat-send-btn" aria-label="Send message"
+                <button type="button" id="chat-send-btn" aria-label="Send message"
                     class="w-12 h-12 rounded-xl bg-gradient-to-r from-accent-cyan to-accent-purple hover:scale-105 hover:shadow-lg hover:shadow-accent-cyan/50 transition-all duration-300 flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100">
                     <i data-lucide="send" class="w-5 h-5 text-dark-deep"></i>
                 </button>
@@ -118,270 +123,6 @@
     </div>
 </div>
 
-<script>
-    // ============================================================================
-    // i18n strings (resolved server-side by Jinja2)
-    // ============================================================================
-    const i18n = {
-      just_now: "{% if lang == 'pt' %}Agora mesmo{% elif lang == 'es' %}Ahora mismo{% else %}Just now{% endif %}",
-      error_msg: "{% if lang == 'pt' %}⚠️ Estou tendo problemas para conectar agora. Por favor, tente novamente em um momento.{% elif lang == 'es' %}⚠️ Estoy teniendo problemas para conectarme ahora. Por favor, intenta de nuevo en un momento.{% else %}⚠️ I'm having trouble connecting right now. Please try again in a moment.{% endif %}"
-    };
-
-    // ============================================================================
-    // Chat State
-    // ============================================================================
-    let chatLanguage = '{{ lang }}';
-
-    let isStreaming = false;
-
-    // ============================================================================
-    // Typewriter Queue
-    // Buffers incoming characters and paints them at CHAR_DELAY_MS per character,
-    // giving a natural 'typing' feel regardless of how fast Groq sends tokens.
-    // ============================================================================
-    const CHAR_DELAY_MS = 30; // ms between each rendered character (~18 chars/sec — ChatGPT/Gemini pace)
-    let twQueue = [];      // { char, targetP } pairs waiting to paint
-    let twRunning = false;   // whether the drain loop is active
-    let twDoneCallback = null; // called when queue is drained AND stream is finished
-    let streamDone = false;   // true once the SSE stream sends [DONE]
-
-    function twEnqueue(text, targetP) {
-        for (const char of text) {
-            twQueue.push({ char, targetP });
-        }
-        if (!twRunning) {
-            twRunning = true;
-            twDrain();
-        }
-    }
-
-    function twDrain() {
-        if (twQueue.length === 0) {
-            twRunning = false;
-            // Queue is empty — if the stream is also done, fire the finish callback
-            if (streamDone && twDoneCallback) {
-                twDoneCallback();
-                twDoneCallback = null;
-            }
-            return;
-        }
-        const { char, targetP } = twQueue.shift();
-        targetP.textContent += char;
-        scrollToBottom();
-        setTimeout(twDrain, CHAR_DELAY_MS);
-    }
-
-    function twReset() {
-        twQueue = [];
-        twRunning = false;
-        twDoneCallback = null;
-        streamDone = false;
-    }
-
-    // ============================================================================
-    // Form Submit → SSE Streaming via Fetch API
-    // ============================================================================
-    document.getElementById('chat-form').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        if (isStreaming) return;
-
-        const input = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('chat-send-btn');
-        const message = input.value.trim();
-
-        if (!message) return;
-
-        // 1. Render user bubble immediately
-        addUserMessage(message);
-        input.value = '';
-
-        // 2. Lock UI & reset typewriter state
-        isStreaming = true;
-        sendBtn.disabled = true;
-        twReset();
-
-        // 3. Show typing indicator while we wait for the first token
-        showTypingIndicator();
-
-        // 4. Create AI reply bubble (hidden until first character renders)
-        const aiBubble = createAiBubble();
-        const streamP = aiBubble.querySelector('#ai-stream-text');
-        const cursor = aiBubble.querySelector('#stream-cursor');
-
-        // This runs once the typewriter queue is drained after [DONE]
-        function unlockUI() {
-            if (cursor) cursor.remove();
-            isStreaming = false;
-            sendBtn.disabled = false;
-            input.focus();
-            lucide.createIcons();
-        }
-
-        try {
-            const response = await fetch('/api/v1/chat/stream/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message, language: chatLanguage }),
-            });
-
-            if (!response.ok || !response.body) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let buffer = '';
-            let firstToken = true;
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                buffer += decoder.decode(value, { stream: true });
-
-                const frames = buffer.split('\n\n');
-                buffer = frames.pop();
-
-                for (const frame of frames) {
-                    if (!frame.startsWith('data: ')) continue;
-                    const data = frame.slice(6);
-
-                    if (data === '[DONE]') {
-                        streamDone = true;
-                        twDoneCallback = unlockUI;
-                        if (!twRunning) {
-                            unlockUI();
-                            twDoneCallback = null;
-                        }
-                        break;
-                    }
-
-                    if (data.startsWith('[ERROR]')) {
-                        removeTypingIndicator();
-                        aiBubble.style.display = '';
-                        streamP.classList.add('text-accent-purple');
-                        streamP.textContent = data.slice(8);
-                        if (cursor) cursor.remove();
-                        unlockUI();
-                        break;
-                    }
-
-                    if (firstToken) {
-                        removeTypingIndicator();
-                        aiBubble.style.display = '';
-                        firstToken = false;
-                    }
-
-                    const text = data.replace(/\\n/g, '\n');
-                    twEnqueue(text, streamP);
-                }
-            }
-
-            if (firstToken) {
-                removeTypingIndicator();
-                streamDone = true;
-                twDoneCallback = unlockUI;
-                if (!twRunning) { unlockUI(); twDoneCallback = null; }
-            }
-
-        } catch (err) {
-            console.error('MatIAs stream error:', err);
-            removeTypingIndicator();
-            aiBubble.style.display = '';
-            streamP.classList.add('text-accent-purple');
-            streamP.textContent = i18n.error_msg;
-            if (cursor) cursor.remove();
-            unlockUI();
-        }
-    });
-
-    // ============================================================================
-    // DOM Helpers
-    // ============================================================================
-
-    function addUserMessage(message) {
-        const container = document.getElementById('chat-messages');
-        const div = document.createElement('div');
-        div.className = 'flex justify-end animate-slide-in';
-        div.innerHTML = `
-        <div class="max-w-[80%]">
-            <div class="bg-gradient-to-r from-accent-cyan to-accent-purple rounded-2xl rounded-tr-sm p-4">
-                <p class="text-dark-deep font-medium">${escapeHtml(message)}</p>
-            </div>
-            <p class="text-xs text-text-tertiary mt-2 mr-4 text-right">${i18n.just_now}</p>
-        </div>
-    `;
-        container.appendChild(div);
-        scrollToBottom();
-    }
-
-    function createAiBubble() {
-        const container = document.getElementById('chat-messages');
-        const wrapper = document.createElement('div');
-        wrapper.className = 'flex justify-start animate-slide-in';
-        wrapper.style.display = 'none';
-
-        wrapper.innerHTML = `
-        <div class="max-w-[80%]">
-            <div class="bg-dark-mid border border-accent-cyan/10 rounded-2xl rounded-tl-sm p-4">
-                <p class="text-text-primary whitespace-pre-wrap" id="ai-stream-text"></p>
-                <span class="inline-block w-2 h-4 bg-accent-cyan opacity-75 animate-pulse ml-0.5 align-middle" id="stream-cursor"></span>
-            </div>
-            <p class="text-xs text-text-tertiary mt-2 ml-4">${i18n.just_now}</p>
-        </div>
-    `;
-        container.appendChild(wrapper);
-        return wrapper;
-    }
-
-    function showTypingIndicator() {
-        const container = document.getElementById('chat-messages');
-        const div = document.createElement('div');
-        div.id = 'typing-indicator';
-        div.className = 'flex justify-start animate-slide-in';
-        div.innerHTML = `
-        <div class="max-w-[80%]">
-            <div class="bg-dark-mid border border-accent-cyan/10 rounded-2xl rounded-tl-sm p-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-accent-cyan rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-accent-cyan rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                    <div class="w-2 h-2 bg-accent-cyan rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                </div>
-            </div>
-        </div>
-    `;
-        container.appendChild(div);
-        scrollToBottom();
-    }
-
-    function removeTypingIndicator() {
-        const el = document.getElementById('typing-indicator');
-        if (el) el.remove();
-    }
-
-    function scrollToBottom() {
-        const container = document.getElementById('chat-messages');
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function sendQuickMessage(message) {
-        document.getElementById('chat-input').value = message;
-        document.getElementById('chat-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    // ============================================================================
-    // Init
-    // ============================================================================
-    lucide.createIcons();
-    document.getElementById('chat-input').focus();
-</script>
 
 <style>
     /* Custom scrollbar for chat messages */

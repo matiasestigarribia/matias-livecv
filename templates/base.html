@@ -4,227 +4,249 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Matías P. Estigarribia - AI Developer & Full-Stack Engineer{% endblock %}</title>
-    
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="Full-Stack AI Developer specializing in intelligent web applications. FastAPI, React, LangChain, OpenAI, RAG systems.">
     <meta name="keywords" content="AI Developer, Full-Stack Developer, FastAPI, Python, React, Machine Learning, LangChain, OpenAI">
     <meta name="author" content="Matías P. Estigarribia">
-    
+
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Matías P. Estigarribia - AI Developer">
     <meta property="og:description" content="Building intelligent systems that solve real problems">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.jpg') }}">
     <meta property="og:url" content="https://yourdomain.com">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Matías P. Estigarribia - AI Developer">
     <meta name="twitter:description" content="Building intelligent systems that solve real problems">
     <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.jpg') }}">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <link href="{{ url_for('static', path='css/output.css') }}" rel="stylesheet">
-    
+
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-    
+
     <!-- Icons -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
-    
+
     {% block extra_head %}{% endblock %}
 </head>
 
 <body class="bg-dark-deep text-text-primary font-sans antialiased overflow-x-hidden">
-    
+
     <!-- Neural Network Background Canvas -->
     <canvas id="neural-bg" class="fixed inset-0 -z-10 opacity-10 pointer-events-none"></canvas>
-    
+
     <!-- Navigation (always fixed) -->
     <nav class="fixed top-0 w-full z-50 bg-dark-deep/80 backdrop-blur-lg border-b border-accent-cyan/10">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <!-- Logo -->
-            <a href="/" 
-               hx-get="/" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
+            <a href="/"
+               hx-get="/"
+               hx-target="#content"
+               hx-swap="innerHTML"
                hx-push-url="true"
                hx-vals="js:{lang: currentLanguage}"
                class="text-2xl font-bold hover:opacity-80 transition-opacity">
                 MATÍAS P <span class="text-accent-cyan">ESTIGARRIBIA</span>
             </a>
-            
+
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="/" 
-                   hx-get="/" 
-                   hx-target="#content" 
-                   hx-swap="innerHTML" 
+                <a href="/"
+                   hx-get="/"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
                    hx-push-url="true"
                    hx-vals="js:{lang: currentLanguage}"
                    class="nav-link">
-                    Home
+                    <span data-i18n="home">{% if lang == 'pt' %}Início{% elif lang == 'es' %}Inicio{% else %}Home{% endif %}</span>
                 </a>
-                <a href="/about" 
-                   hx-get="/about" 
-                   hx-target="#content" 
-                   hx-swap="innerHTML" 
+                <a href="/about"
+                   hx-get="/about"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
                    hx-push-url="true"
                    hx-vals="js:{lang: currentLanguage}"
                    class="nav-link">
-                    About
+                    <span data-i18n="about">{% if lang == 'pt' %}Sobre mim{% elif lang == 'es' %}Sobre mí{% else %}About{% endif %}</span>
                 </a>
-                <a href="/skills-and-languages" 
-                   hx-get="/skills-and-languages" 
-                   hx-target="#content" 
-                   hx-swap="innerHTML" 
+                <a href="/skills-and-languages"
+                   hx-get="/skills-and-languages"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
                    hx-push-url="true"
                    hx-vals="js:{lang: currentLanguage}"
                    class="nav-link">
-                    Skills
+                    <span data-i18n="skills">{% if lang == 'pt' %}Habilidades{% elif lang == 'es' %}Habilidades{% else %}Skills{% endif %}</span>
                 </a>
-                <a href="/projects" 
-                   hx-get="/projects" 
-                   hx-target="#content" 
-                   hx-swap="innerHTML" 
+                <a href="/projects"
+                   hx-get="/projects"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
                    hx-push-url="true"
                    hx-vals="js:{lang: currentLanguage}"
                    class="nav-link">
-                    Projects
+                    <span data-i18n="projects">{% if lang == 'pt' %}Projetos{% elif lang == 'es' %}Proyectos{% else %}Projects{% endif %}</span>
                 </a>
-                <a href="/experience" 
-                   hx-get="/experience" 
-                   hx-target="#content" 
-                   hx-swap="innerHTML" 
+                <a href="/experience"
+                   hx-get="/experience"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
                    hx-push-url="true"
                    hx-vals="js:{lang: currentLanguage}"
                    class="nav-link">
-                    Experience
+                    <span data-i18n="experience">{% if lang == 'pt' %}Experiência{% elif lang == 'es' %}Experiencia{% else %}Experience{% endif %}</span>
                 </a>
-                <a href="/contact" 
-                   hx-get="/contact" 
-                   hx-target="#content" 
-                   hx-swap="innerHTML" 
+                <a href="/contact"
+                   hx-get="/contact"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
                    hx-push-url="true"
                    hx-vals="js:{lang: currentLanguage}"
                    class="nav-link">
-                    Contact
+                    <span data-i18n="contact">{% if lang == 'pt' %}Contato{% elif lang == 'es' %}Contacto{% else %}Contact{% endif %}</span>
                 </a>
             </div>
-            
-            <!-- Language Switcher -->
+
+            <!-- Language Switcher (Desktop) -->
             <div class="hidden md:flex space-x-2">
-                <button onclick="setLanguage('en')" 
-                        class="lang-btn" 
+                <button onclick="setLanguage('en')"
+                        class="lang-btn"
                         data-lang="en">
                     🇺🇸
                 </button>
-                <button onclick="setLanguage('es')" 
-                        class="lang-btn" 
+                <button onclick="setLanguage('es')"
+                        class="lang-btn"
                         data-lang="es">
                     🇦🇷
                 </button>
-                <button onclick="setLanguage('pt')" 
-                        class="lang-btn" 
+                <button onclick="setLanguage('pt')"
+                        class="lang-btn"
                         data-lang="pt">
                     🇧🇷
                 </button>
             </div>
-            
+
             <!-- Mobile Menu Toggle -->
-            <button onclick="toggleMobileMenu()" 
+            <button id="mobile-menu-toggle"
+                    onclick="toggleMobileMenu()"
                     class="md:hidden text-text-primary hover:text-accent-cyan transition-colors"
-                    aria-label="Toggle mobile menu">
+                    aria-label="Toggle mobile menu"
+                    aria-expanded="false"
+                    aria-controls="mobile-menu">
                 <i data-lucide="menu" class="w-6 h-6"></i>
             </button>
         </div>
-        
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-dark-mid border-t border-accent-cyan/10">
-            <a href="/" 
-               hx-get="/" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
-               hx-push-url="true"
-               hx-vals="js:{lang: currentLanguage}"
-               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
-               onclick="toggleMobileMenu()">
-                Home
-            </a>
-            <a href="/about" 
-               hx-get="/about" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
-               hx-push-url="true"
-               hx-vals="js:{lang: currentLanguage}"
-               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
-               onclick="toggleMobileMenu()">
-                About
-            </a>
-            <a href="/skills-and-languages" 
-               hx-get="/skills-and-languages" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
-               hx-push-url="true"
-               hx-vals="js:{lang: currentLanguage}"
-               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
-               onclick="toggleMobileMenu()">
-                Skills
-            </a>
-            <a href="/projects" 
-               hx-get="/projects" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
-               hx-push-url="true"
-               hx-vals="js:{lang: currentLanguage}"
-               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
-               onclick="toggleMobileMenu()">
-                Projects
-            </a>
-            <a href="/experience" 
-               hx-get="/experience" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
-               hx-push-url="true"
-               hx-vals="js:{lang: currentLanguage}"
-               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
-               onclick="toggleMobileMenu()">
-                Experience
-            </a>
-            <a href="/contact" 
-               hx-get="/contact" 
-               hx-target="#content" 
-               hx-swap="innerHTML" 
-               hx-push-url="true"
-               hx-vals="js:{lang: currentLanguage}"
-               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
-               onclick="toggleMobileMenu()">
-                Contact
-            </a>
-            
+
+        <!-- Mobile Menu: glassmorphism slide-in panel -->
+        <div id="mobile-menu"
+             class="hidden md:hidden bg-dark-mid/95 backdrop-blur-md border-t border-accent-cyan/10">
+
+            <!-- Nav links -->
+            <nav class="px-4 pt-4 pb-2 space-y-1" aria-label="Mobile navigation">
+                <a href="/"
+                   hx-get="/"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   data-mobile-path="/"
+                   class="mobile-nav-link flex items-center py-3 pl-4 pr-3 rounded-lg text-text-secondary hover:text-text-primary border-l-2 border-transparent hover:border-accent-cyan hover:bg-dark-elevated/50 transition-all duration-200"
+                   onclick="toggleMobileMenu()">
+                    <span data-i18n="home">{% if lang == 'pt' %}Início{% elif lang == 'es' %}Inicio{% else %}Home{% endif %}</span>
+                </a>
+                <a href="/about"
+                   hx-get="/about"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   data-mobile-path="/about"
+                   class="mobile-nav-link flex items-center py-3 pl-4 pr-3 rounded-lg text-text-secondary hover:text-text-primary border-l-2 border-transparent hover:border-accent-cyan hover:bg-dark-elevated/50 transition-all duration-200"
+                   onclick="toggleMobileMenu()">
+                    <span data-i18n="about">{% if lang == 'pt' %}Sobre mim{% elif lang == 'es' %}Sobre mí{% else %}About{% endif %}</span>
+                </a>
+                <a href="/skills-and-languages"
+                   hx-get="/skills-and-languages"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   data-mobile-path="/skills-and-languages"
+                   class="mobile-nav-link flex items-center py-3 pl-4 pr-3 rounded-lg text-text-secondary hover:text-text-primary border-l-2 border-transparent hover:border-accent-cyan hover:bg-dark-elevated/50 transition-all duration-200"
+                   onclick="toggleMobileMenu()">
+                    <span data-i18n="skills">{% if lang == 'pt' %}Habilidades{% elif lang == 'es' %}Habilidades{% else %}Skills{% endif %}</span>
+                </a>
+                <a href="/projects"
+                   hx-get="/projects"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   data-mobile-path="/projects"
+                   class="mobile-nav-link flex items-center py-3 pl-4 pr-3 rounded-lg text-text-secondary hover:text-text-primary border-l-2 border-transparent hover:border-accent-cyan hover:bg-dark-elevated/50 transition-all duration-200"
+                   onclick="toggleMobileMenu()">
+                    <span data-i18n="projects">{% if lang == 'pt' %}Projetos{% elif lang == 'es' %}Proyectos{% else %}Projects{% endif %}</span>
+                </a>
+                <a href="/experience"
+                   hx-get="/experience"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   data-mobile-path="/experience"
+                   class="mobile-nav-link flex items-center py-3 pl-4 pr-3 rounded-lg text-text-secondary hover:text-text-primary border-l-2 border-transparent hover:border-accent-cyan hover:bg-dark-elevated/50 transition-all duration-200"
+                   onclick="toggleMobileMenu()">
+                    <span data-i18n="experience">{% if lang == 'pt' %}Experiência{% elif lang == 'es' %}Experiencia{% else %}Experience{% endif %}</span>
+                </a>
+                <a href="/contact"
+                   hx-get="/contact"
+                   hx-target="#content"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   data-mobile-path="/contact"
+                   class="mobile-nav-link flex items-center py-3 pl-4 pr-3 rounded-lg text-text-secondary hover:text-text-primary border-l-2 border-transparent hover:border-accent-cyan hover:bg-dark-elevated/50 transition-all duration-200"
+                   onclick="toggleMobileMenu()">
+                    <span data-i18n="contact">{% if lang == 'pt' %}Contato{% elif lang == 'es' %}Contacto{% else %}Contact{% endif %}</span>
+                </a>
+            </nav>
+
+            <!-- Separator -->
+            <div class="mx-4 my-2 border-t border-accent-cyan/10"></div>
+
             <!-- Mobile Language Switcher -->
-            <div class="flex justify-center space-x-4 px-6 py-4 border-t border-accent-cyan/10">
-                <button onclick="setLanguage('en')" class="lang-btn" data-lang="en">🇺🇸</button>
-                <button onclick="setLanguage('es')" class="lang-btn" data-lang="es">🇦🇷</button>
-                <button onclick="setLanguage('pt')" class="lang-btn" data-lang="pt">🇧🇷</button>
+            <div class="px-4 pt-2 pb-5">
+                <p class="text-xs font-medium tracking-widest uppercase text-text-tertiary mb-3">
+                    {% if lang == 'pt' %}Idioma{% elif lang == 'es' %}Idioma{% else %}Language{% endif %}
+                </p>
+                <div class="flex space-x-2">
+                    <button onclick="setLanguage('en')" class="lang-btn" data-lang="en">🇺🇸</button>
+                    <button onclick="setLanguage('es')" class="lang-btn" data-lang="es">🇦🇷</button>
+                    <button onclick="setLanguage('pt')" class="lang-btn" data-lang="pt">🇧🇷</button>
+                </div>
             </div>
         </div>
     </nav>
-    
+
     <!-- Main Content Area (HTMX swaps content here) -->
     <main id="content" class="pt-20">
         {% block content %}{% endblock %}
     </main>
-    
+
     <!-- Footer -->
     <footer class="py-12 px-6 border-t border-accent-cyan/10 bg-dark-mid/50">
         <div class="max-w-7xl mx-auto">
@@ -235,24 +257,44 @@
                         MATÍAS P <span class="text-accent-cyan">ESTIGARRIBIA</span>
                     </h3>
                     <p class="text-text-secondary">
-                        AI Developer & Full-Stack Engineer building intelligent systems that solve real problems.
+                        <span data-i18n="footerDesc">{% if lang == 'pt' %}Desenvolvedor AI &amp; Engenheiro Full-Stack construindo sistemas inteligentes que resolvem problemas reais.{% elif lang == 'es' %}Desarrollador AI &amp; Ingeniero Full-Stack construyendo sistemas inteligentes que resuelven problemas reales.{% else %}AI Developer &amp; Full-Stack Engineer building intelligent systems that solve real problems.{% endif %}</span>
                     </p>
                 </div>
-                
+
                 <!-- Column 2: Quick Links -->
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <h4 class="text-lg font-semibold mb-4">
+                        <span data-i18n="quickLinks">{% if lang == 'pt' %}Links Rápidos{% elif lang == 'es' %}Enlaces Rápidos{% else %}Quick Links{% endif %}</span>
+                    </h4>
                     <ul class="space-y-2">
-                        <li><a href="/projects" hx-get="/projects" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Projects</a></li>
-                        <li><a href="/experience" hx-get="/experience" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Experience</a></li>
-                        <li><a href="/skills-and-languages" hx-get="/skills-and-languages" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Skills</a></li>
-                        <li><a href="/contact" hx-get="/contact" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Contact</a></li>
+                        <li>
+                            <a href="/projects" hx-get="/projects" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">
+                                <span data-i18n="projects">{% if lang == 'pt' %}Projetos{% elif lang == 'es' %}Proyectos{% else %}Projects{% endif %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/experience" hx-get="/experience" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">
+                                <span data-i18n="experience">{% if lang == 'pt' %}Experiência{% elif lang == 'es' %}Experiencia{% else %}Experience{% endif %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/skills-and-languages" hx-get="/skills-and-languages" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">
+                                <span data-i18n="skills">{% if lang == 'pt' %}Habilidades{% elif lang == 'es' %}Habilidades{% else %}Skills{% endif %}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/contact" hx-get="/contact" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">
+                                <span data-i18n="contact">{% if lang == 'pt' %}Contato{% elif lang == 'es' %}Contacto{% else %}Contact{% endif %}</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                
+
                 <!-- Column 3: Connect -->
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <h4 class="text-lg font-semibold mb-4">
+                        <span data-i18n="connect">{% if lang == 'pt' %}Conectar{% elif lang == 'es' %}Conectar{% else %}Connect{% endif %}</span>
+                    </h4>
                     <div class="flex space-x-4">
                         <a href="https://github.com/matiasestigarribia" target="_blank" rel="noopener noreferrer" class="social-icon">
                             <i data-lucide="github" class="w-5 h-5"></i>
@@ -263,53 +305,129 @@
                         <a href="mailto:matiasp.estigarribia@gmail.com" class="social-icon">
                             <i data-lucide="mail" class="w-5 h-5"></i>
                         </a>
-                        
                     </div>
                 </div>
             </div>
-            
+
             <!-- Bottom Bar -->
             <div class="pt-8 border-t border-accent-cyan/10 text-center text-text-tertiary text-sm">
-                <p>&copy; 2026 Matías P. Estigarribia. Built with FastAPI, HTMX, Tailwind, Langchain & AI.</p>
+                <p>&copy; 2026 Matías P. Estigarribia. Built with FastAPI, HTMX, Tailwind, Langchain &amp; AI.</p>
             </div>
         </div>
     </footer>
-    
-   
+
+
     <!-- Chat Modal Container -->
     <div id="chat-modal" class="hidden"></div>
-    
+
     <!-- Scripts -->
     <script src="{{ url_for('static', path='js/neural-bg.js') }}"></script>
     <script src="{{ url_for('static', path='js/interactions.js') }}"></script>
-    
+
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
-        
-        // Mobile menu toggle
+
+        // ============================================
+        // NAV / FOOTER i18n
+        // ============================================
+
+        const navI18n = {
+            home:       { en: 'Home',         pt: 'Início',        es: 'Inicio' },
+            about:      { en: 'About',         pt: 'Sobre mim',     es: 'Sobre mí' },
+            skills:     { en: 'Skills',        pt: 'Habilidades',   es: 'Habilidades' },
+            projects:   { en: 'Projects',      pt: 'Projetos',      es: 'Proyectos' },
+            experience: { en: 'Experience',    pt: 'Experiência',   es: 'Experiencia' },
+            contact:    { en: 'Contact',       pt: 'Contato',       es: 'Contacto' },
+            quickLinks: { en: 'Quick Links',   pt: 'Links Rápidos', es: 'Enlaces Rápidos' },
+            connect:    { en: 'Connect',       pt: 'Conectar',      es: 'Conectar' },
+            footerDesc: {
+                en: 'AI Developer & Full-Stack Engineer building intelligent systems that solve real problems.',
+                pt: 'Desenvolvedor AI & Engenheiro Full-Stack construindo sistemas inteligentes que resolvem problemas reais.',
+                es: 'Desarrollador AI & Ingeniero Full-Stack construyendo sistemas inteligentes que resuelven problemas reales.',
+            },
+        };
+
+        /**
+         * Update all [data-i18n] elements in the nav and footer
+         * with translations for the given language code.
+         */
+        function updateNavFooterLang(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                const translations = navI18n[key];
+                if (translations && translations[lang] !== undefined) {
+                    el.textContent = translations[lang];
+                }
+            });
+        }
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+
+        let _mobileMenuOpen = false;
+
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            const toggle = document.getElementById('mobile-menu-toggle');
+            _mobileMenuOpen = !_mobileMenuOpen;
+
+            if (_mobileMenuOpen) {
+                menu.classList.remove('hidden');
+                // Swap hamburger → X
+                toggle.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+                toggle.setAttribute('aria-expanded', 'true');
+            } else {
+                menu.classList.add('hidden');
+                // Swap X → hamburger
+                toggle.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+            // Re-render the newly injected Lucide icon
+            lucide.createIcons();
         }
-        
+
+        /**
+         * Highlight the mobile nav link that matches the current pathname.
+         * Applied once on load and again after each HTMX swap.
+         */
+        function applyActiveMobileLink() {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('[data-mobile-path]').forEach(link => {
+                const linkPath = link.getAttribute('data-mobile-path');
+                // Exact match for '/', prefix match for everything else
+                const isActive = (linkPath === '/')
+                    ? currentPath === '/'
+                    : currentPath.startsWith(linkPath);
+
+                if (isActive) {
+                    link.classList.add('text-accent-cyan', 'border-accent-cyan');
+                    link.classList.remove('text-text-secondary', 'border-transparent');
+                } else {
+                    link.classList.remove('text-accent-cyan', 'border-accent-cyan');
+                    link.classList.add('text-text-secondary', 'border-transparent');
+                }
+            });
+        }
+
         // ============================================
         // LANGUAGE SWITCHER
         // ============================================
-        
-        // currentLanguage must be declared before hx-vals references it
-        // URL param takes priority over localStorage (HTMX swaps pass lang via query string)
+
+        // currentLanguage must be declared before hx-vals references it.
+        // URL param takes priority over localStorage (HTMX swaps pass lang via query string).
         const _urlLang = new URLSearchParams(window.location.search).get('lang');
         const _validLangs = ['en', 'es', 'pt'];
         let currentLanguage = (_validLangs.includes(_urlLang) ? _urlLang : null)
             || localStorage.getItem('language')
             || 'en';
         localStorage.setItem('language', currentLanguage);
-        
+
         function setLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('language', lang);
-            
+
             // Update active button state
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if (btn.dataset.lang === lang) {
@@ -320,13 +438,31 @@
                     btn.classList.add('bg-dark-elevated');
                 }
             });
-            
+
             // Update chat language input if present
             const chatLangInput = document.getElementById('chat-language');
             if (chatLangInput) {
                 chatLangInput.value = lang;
             }
-            
+
+            // Update nav/footer labels immediately (no full-page reload needed)
+            updateNavFooterLang(lang);
+
+            // If chat is currently open, reload it with the new language immediately.
+            // If chat is closed/hidden, leave it alone – openChat() will detect the
+            // language mismatch via dataset.chatLang and reload on next open.
+            const chatModal = document.getElementById('chat-modal');
+            if (chatModal && !chatModal.classList.contains('hidden') && chatModal.innerHTML.trim() !== '') {
+                chatModal.innerHTML = '';
+                htmx.ajax('GET', '/chat?lang=' + lang, {
+                    target: '#chat-modal',
+                    swap: 'innerHTML'
+                }).then(() => {
+                    chatModal.dataset.chatLang = lang;
+                    chatModal.classList.remove('hidden');
+                });
+            }
+
             // Reload the current page content with the new language via HTMX
             const currentPath = window.location.pathname;
             htmx.ajax('GET', currentPath + '?lang=' + lang, {
@@ -334,8 +470,8 @@
                 swap: 'innerHTML'
             });
         }
-        
-        // Apply saved language on load (button styles)
+
+        // Apply saved language on load (button styles + nav/footer labels + active link)
         (function initLanguage() {
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if (btn.dataset.lang === currentLanguage) {
@@ -346,40 +482,309 @@
                     btn.classList.add('bg-dark-elevated');
                 }
             });
+
+            // Sync nav/footer text with the resolved language
+            // (handles the case where JS lang differs from the Jinja2 server-rendered lang)
+            updateNavFooterLang(currentLanguage);
+
+            // Highlight the active page in the mobile menu
+            applyActiveMobileLink();
         })();
-        
-        // Open chat modal
+
+        // ============================================
+        // CHAT MODAL
+        // ============================================
+
+        // Open chat modal – reload if empty OR if language changed since last load
         function openChat() {
             const chatModal = document.getElementById('chat-modal');
-            const chatBubble = document.getElementById('chat-bubble');
-            
-            // Load chat interface via HTMX if not already loaded
-            if (chatModal.innerHTML.trim() === '') {
-                htmx.ajax('GET', '/chat', {
+            const chatBubble = document.getElementById('chat-bubble'); // may be null – always guard
+
+            const isEmpty = chatModal.innerHTML.trim() === '';
+            const langMismatch = chatModal.dataset.chatLang !== currentLanguage;
+
+            if (isEmpty || langMismatch) {
+                chatModal.innerHTML = ''; // clear stale content before reload
+                htmx.ajax('GET', '/chat?lang=' + currentLanguage, {
                     target: '#chat-modal',
                     swap: 'innerHTML'
                 }).then(() => {
+                    chatModal.dataset.chatLang = currentLanguage;
                     chatModal.classList.remove('hidden');
-                    chatBubble.classList.add('hidden');
+                    if (chatBubble) chatBubble.classList.add('hidden');
                 });
             } else {
                 chatModal.classList.remove('hidden');
-                chatBubble.classList.add('hidden');
+                if (chatBubble) chatBubble.classList.add('hidden');
+                initChatModal(); // re-attach listeners defensively (DOM persists, listeners may be lost)
             }
         }
-        
+
         // Close chat (called from chat modal)
         function closeChat() {
-            document.getElementById('chat-modal').classList.add('hidden');
-            document.getElementById('chat-bubble').classList.remove('hidden');
+            const chatModal = document.getElementById('chat-modal');
+            const chatBubble = document.getElementById('chat-bubble'); // may be null
+            if (chatModal) chatModal.classList.add('hidden');
+            if (chatBubble) chatBubble.classList.remove('hidden');
         }
-        
-        // HTMX after-swap event - re-initialize Lucide icons
-        document.body.addEventListener('htmx:afterSwap', function() {
+
+        // ============================================
+        // CHAT MODAL — runtime logic
+        // Lives here (never swapped) so HTMX script-dedup cannot prevent re-init.
+        // Called after every chat fragment swap AND defensively when re-showing cached content.
+        // ============================================
+
+        function initChatModal() {
+            const modalInner = document.getElementById('chat-modal-inner');
+            if (!modalInner) return;
+
+            // Read i18n strings baked into data-attributes by Jinja2
+            const i18n = {
+                just_now:  modalInner.dataset.i18nJustNow,
+                error_msg: modalInner.dataset.i18nError,
+            };
+
+            // Always read the current language from the hidden input so it stays in
+            // sync with the language switcher even if the user changes language mid-session.
+            function getChatLanguage() {
+                const el = document.getElementById('chat-language');
+                return (el && el.value) ? el.value : 'en';
+            }
+
+            // ---- Typewriter queue ----
+            // Buffers incoming characters and paints them at CHAR_DELAY_MS per character.
+            const CHAR_DELAY_MS = 30;
+            let isStreaming    = false;
+            let twQueue        = [];
+            let twRunning      = false;
+            let twDoneCallback = null;
+            let streamDone     = false;
+
+            function twEnqueue(text, targetP) {
+                for (const char of text) { twQueue.push({ char, targetP }); }
+                if (!twRunning) { twRunning = true; twDrain(); }
+            }
+
+            function twDrain() {
+                if (twQueue.length === 0) {
+                    twRunning = false;
+                    if (streamDone && twDoneCallback) { twDoneCallback(); twDoneCallback = null; }
+                    return;
+                }
+                const { char, targetP } = twQueue.shift();
+                targetP.textContent += char;
+                scrollToBottom();
+                setTimeout(twDrain, CHAR_DELAY_MS);
+            }
+
+            function twReset() {
+                twQueue = []; twRunning = false; twDoneCallback = null; streamDone = false;
+            }
+
+            // ---- DOM helpers ----
+
+            function addUserMessage(message) {
+                const container = document.getElementById('chat-messages');
+                const div = document.createElement('div');
+                div.className = 'flex justify-end animate-slide-in';
+                div.innerHTML = `
+                    <div class="max-w-[80%]">
+                        <div class="bg-gradient-to-r from-accent-cyan to-accent-purple rounded-2xl rounded-tr-sm p-4">
+                            <p class="text-dark-deep font-medium">${escapeHtml(message)}</p>
+                        </div>
+                        <p class="text-xs text-text-tertiary mt-2 mr-4 text-right">${i18n.just_now}</p>
+                    </div>`;
+                container.appendChild(div);
+                scrollToBottom();
+            }
+
+            function createAiBubble() {
+                const container = document.getElementById('chat-messages');
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex justify-start animate-slide-in';
+                wrapper.style.display = 'none';
+                wrapper.innerHTML = `
+                    <div class="max-w-[80%]">
+                        <div class="bg-dark-mid border border-accent-cyan/10 rounded-2xl rounded-tl-sm p-4">
+                            <p class="text-text-primary whitespace-pre-wrap" id="ai-stream-text"></p>
+                            <span class="inline-block w-2 h-4 bg-accent-cyan opacity-75 animate-pulse ml-0.5 align-middle" id="stream-cursor"></span>
+                        </div>
+                        <p class="text-xs text-text-tertiary mt-2 ml-4">${i18n.just_now}</p>
+                    </div>`;
+                container.appendChild(wrapper);
+                return wrapper;
+            }
+
+            function showTypingIndicator() {
+                const container = document.getElementById('chat-messages');
+                const div = document.createElement('div');
+                div.id = 'typing-indicator';
+                div.className = 'flex justify-start animate-slide-in';
+                div.innerHTML = `
+                    <div class="max-w-[80%]">
+                        <div class="bg-dark-mid border border-accent-cyan/10 rounded-2xl rounded-tl-sm p-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-accent-cyan rounded-full animate-bounce"></div>
+                                <div class="w-2 h-2 bg-accent-cyan rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                <div class="w-2 h-2 bg-accent-cyan rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            </div>
+                        </div>
+                    </div>`;
+                container.appendChild(div);
+                scrollToBottom();
+            }
+
+            function removeTypingIndicator() {
+                const el = document.getElementById('typing-indicator');
+                if (el) el.remove();
+            }
+
+            function scrollToBottom() {
+                const c = document.getElementById('chat-messages');
+                c.scrollTop = c.scrollHeight;
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // ---- Main send handler ----
+
+            async function doSendMessage() {
+                if (isStreaming) return;
+                const input   = document.getElementById('chat-input');
+                const sendBtn = document.getElementById('chat-send-btn');
+                const message = input.value.trim();
+                if (!message) return;
+
+                addUserMessage(message);
+                input.value = '';
+                isStreaming = true;
+                sendBtn.disabled = true;
+                twReset();
+
+                let aiBubble, streamP, cursor;
+
+                function unlockUI() {
+                    if (cursor) cursor.remove();
+                    isStreaming = false;
+                    sendBtn.disabled = false;
+                    input.focus();
+                    lucide.createIcons();
+                }
+
+                try {
+                    showTypingIndicator();
+                    aiBubble = createAiBubble();
+                    streamP  = aiBubble.querySelector('#ai-stream-text');
+                    cursor   = aiBubble.querySelector('#stream-cursor');
+
+                    const response = await fetch('/api/v1/chat/stream/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message, language: getChatLanguage() }),
+                    });
+
+                    if (!response.ok || !response.body) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+
+                    const reader  = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let buffer     = '';
+                    let firstToken = true;
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        buffer += decoder.decode(value, { stream: true });
+                        const frames = buffer.split('\n\n');
+                        buffer = frames.pop();
+
+                        for (const frame of frames) {
+                            if (!frame.startsWith('data: ')) continue;
+                            const data = frame.slice(6);
+
+                            if (data === '[DONE]') {
+                                streamDone = true;
+                                twDoneCallback = unlockUI;
+                                if (!twRunning) { unlockUI(); twDoneCallback = null; }
+                                break;
+                            }
+
+                            if (data.startsWith('[ERROR]')) {
+                                removeTypingIndicator();
+                                aiBubble.style.display = '';
+                                streamP.classList.add('text-accent-purple');
+                                streamP.textContent = data.slice(8);
+                                if (cursor) cursor.remove();
+                                unlockUI();
+                                break;
+                            }
+
+                            if (firstToken) {
+                                removeTypingIndicator();
+                                aiBubble.style.display = '';
+                                firstToken = false;
+                            }
+
+                            const text = data.replace(/\\n/g, '\n');
+                            twEnqueue(text, streamP);
+                        }
+                    }
+
+                    if (firstToken) {
+                        removeTypingIndicator();
+                        streamDone = true;
+                        twDoneCallback = unlockUI;
+                        if (!twRunning) { unlockUI(); twDoneCallback = null; }
+                    }
+
+                } catch (err) {
+                    console.error('MatIAs stream error:', err);
+                    removeTypingIndicator();
+                    if (aiBubble) {
+                        aiBubble.style.display = '';
+                        if (streamP) { streamP.classList.add('text-accent-purple'); streamP.textContent = i18n.error_msg; }
+                        if (cursor) cursor.remove();
+                    }
+                    unlockUI();
+                }
+            }
+
+            // ---- Expose sendQuickMessage globally (called from inline onclick in the fragment) ----
+            window.sendQuickMessage = function(message) {
+                document.getElementById('chat-input').value = message;
+                doSendMessage();
+            };
+
+            // ---- Attach listeners to the freshly-swapped DOM elements ----
+            document.getElementById('chat-send-btn').addEventListener('click', doSendMessage);
+            document.getElementById('chat-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSendMessage(); }
+            });
+
             lucide.createIcons();
+            document.getElementById('chat-input').focus();
+        }
+
+        // ============================================
+        // HTMX LIFECYCLE HOOKS
+        // ============================================
+
+        // Re-initialize Lucide icons and update active mobile link after every HTMX swap.
+        // Also re-initializes chat logic when the chat-modal fragment is swapped in.
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            lucide.createIcons();
+            applyActiveMobileLink();
+            if (evt.detail && evt.detail.target && evt.detail.target.id === 'chat-modal') {
+                initChatModal();
+            }
         });
     </script>
-    
+
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
