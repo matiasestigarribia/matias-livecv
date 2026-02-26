@@ -1,0 +1,183 @@
+<!-- Experience Section -->
+<section class="py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Section Title -->
+        <h2 class="text-5xl md:text-6xl font-bold mb-8 text-gradient">
+            {% if lang == 'pt' %}EXPERIÊNCIA PROFISSIONAL{% elif lang == 'es' %}EXPERIENCIA PROFESIONAL{% else %}PROFESSIONAL EXPERIENCE{% endif %}
+        </h2>
+        <div class="w-32 h-1 bg-gradient-to-r from-accent-cyan to-transparent mb-12"></div>
+        
+        <!-- Experience Timeline -->
+        <div class="space-y-8">
+            
+            {% for exp in experiences %}
+            <div class="card group hover:scale-[1.02] transition-all duration-300">
+                
+                <!-- Header (Always Visible) -->
+                <div class="flex justify-between items-start cursor-pointer"
+                     onclick="toggleExperience('exp-{{ loop.index }}')">
+                    
+                    <div class="flex-1">
+                        <!-- Role & Company -->
+                        <div class="flex items-center flex-wrap gap-3 mb-2">
+                            <h3 class="text-2xl font-bold group-hover:text-accent-cyan transition-colors">
+                                {{ exp.role.get(lang, exp.role.get('en', '')) }}
+                            </h3>
+                            {% if exp.is_current %}
+                            <span class="px-3 py-1 bg-accent-green/20 text-accent-green border border-accent-green/30 rounded-full text-xs font-semibold inline-flex items-center gap-1">
+                                <span class="w-2 h-2 bg-accent-green rounded-full animate-pulse"></span>
+                                {% if lang == 'pt' %}Atual{% elif lang == 'es' %}Actual{% else %}Current{% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Company -->
+                        <p class="text-accent-cyan font-semibold mb-2">
+                            <i data-lucide="building" class="w-4 h-4 inline mr-1"></i>
+                            {{ exp.company_name }}
+                        </p>
+                        
+                        <!-- Date Range -->
+                        <p class="text-sm text-text-tertiary flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            {{ exp.start_date.strftime('%b %Y') }} - 
+                            {% if exp.is_current %}
+                                {% if lang == 'pt' %}Presente{% elif lang == 'es' %}Presente{% else %}Present{% endif %}
+                            {% else %}
+                                {{ exp.end_date.strftime('%b %Y') }}
+                            {% endif %}
+                            • 
+                            {% if exp.is_current %}
+                                {% set months = ((today - exp.start_date).days / 30)|int %}
+                            {% else %}
+                                {% set months = ((exp.end_date - exp.start_date).days / 30)|int %}
+                            {% endif %}
+                            {% if months >= 12 %}
+                                {% set yrs = (months / 12)|int %}
+                                {{ yrs }} {% if lang == 'pt' %}{{ 'anos' if yrs > 1 else 'ano' }}{% elif lang == 'es' %}{{ 'años' if yrs > 1 else 'año' }}{% else %}{{ 'years' if yrs > 1 else 'year' }}{% endif %}
+                                {% if months % 12 > 0 %}
+                                    {% set rem = months % 12 %}
+                                    {{ rem }} {% if lang == 'pt' %}{{ 'meses' if rem > 1 else 'mês' }}{% elif lang == 'es' %}{{ 'meses' if rem > 1 else 'mes' }}{% else %}{{ 'months' if rem > 1 else 'month' }}{% endif %}
+                                {% endif %}
+                            {% else %}
+                                {{ months }} {% if lang == 'pt' %}{{ 'meses' if months > 1 else 'mês' }}{% elif lang == 'es' %}{{ 'meses' if months > 1 else 'mes' }}{% else %}{{ 'months' if months > 1 else 'month' }}{% endif %}
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <!-- Expand/Collapse Icon -->
+                    <button class="text-accent-cyan transition-transform duration-300 expand-icon"
+                            id="icon-exp-{{ loop.index }}">
+                        <i data-lucide="chevron-down" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                
+                <!-- Expanded Content (Hidden by default) -->
+                <div id="exp-{{ loop.index }}" 
+                     class="hidden mt-6 pt-6 border-t border-accent-cyan/10">
+                    <div class="prose prose-invert max-w-none text-text-secondary">
+                        {{ exp.description.get(lang, exp.description.get('en', ''))|safe }}
+                    </div>
+                </div>
+                
+            </div>
+            {% endfor %}
+            
+        </div>
+        
+        {% if not experiences %}
+        <div class="text-center py-12">
+            <p class="text-text-secondary text-lg">{% if lang == 'pt' %}Informações de experiência em breve!{% elif lang == 'es' %}¡Información de experiencia próximamente!{% else %}Experience information coming soon!{% endif %}</p>
+        </div>
+        {% endif %}
+        
+    </div>
+</section>
+
+<script>
+function toggleExperience(id) {
+    const content = document.getElementById(id);
+    const icon = document.getElementById('icon-' + id);
+    
+    if (content.classList.contains('hidden')) {
+        // Expand
+        content.classList.remove('hidden');
+        content.classList.add('animate-slide-down');
+        icon.classList.add('rotate-180');
+    } else {
+        // Collapse
+        content.classList.add('hidden');
+        content.classList.remove('animate-slide-down');
+        icon.classList.remove('rotate-180');
+    }
+    
+    // Re-initialize Lucide icons
+    lucide.createIcons();
+}
+
+// Re-initialize icons on load
+lucide.createIcons();
+</script>
+
+<style>
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+.animate-slide-down {
+    animation: slide-down 0.3s ease-out;
+}
+
+.expand-icon {
+    transition: transform 0.3s ease;
+}
+
+.expand-icon.rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* Prose styling */
+.prose {
+    color: var(--color-text-secondary);
+}
+
+.prose h3, .prose h4 {
+    color: var(--color-text-primary);
+    font-weight: 700;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+.prose p {
+    margin-bottom: 0.75em;
+    line-height: 1.7;
+}
+
+.prose ul {
+    list-style-type: disc;
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+.prose li {
+    margin-bottom: 0.5em;
+    padding-left: 0.25em;
+}
+
+.prose li::marker {
+    color: var(--color-accent-cyan);
+}
+
+.prose strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+</style>

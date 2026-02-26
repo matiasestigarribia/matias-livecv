@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Matías P. Estigarribia - AI Developer & Full-Stack Engineer{% endblock %}
+
+{% block content %}
+<!-- This is loaded on initial page load, then HTMX swaps fragments into #content -->
+{% if active_fragment %}
+{% include active_fragment %}
+{% else %}
+{% include "fragments/home.html" %}
+{% endif %}
+{% endblock %}

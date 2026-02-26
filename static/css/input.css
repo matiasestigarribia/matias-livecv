@@ -1,0 +1,254 @@
+/* ==============================================
+   TAILWIND CSS v4 INPUT FILE
+   ============================================== */
+
+@import "tailwindcss";
+
+/* ==============================================
+   CUSTOM THEME CONFIGURATION
+   ============================================== */
+
+@theme {
+  /* Color Palette */
+  --color-dark-deep: #0a0e1a;
+  --color-dark-mid: #131825;
+  --color-dark-elevated: #1a1f2e;
+  
+  --color-accent-cyan: #00d9ff;
+  --color-accent-purple: #7b61ff;
+  --color-accent-green: #00ffa3;
+  
+  --color-text-primary: #e8edf4;
+  --color-text-secondary: #8b95a8;
+  --color-text-tertiary: #5a6475;
+  
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Animations */
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ==============================================
+   CUSTOM UTILITIES
+   ============================================== */
+
+@layer utilities {
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+  }
+  
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(123, 97, 255, 0.3);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .nav-link {
+    @apply text-text-secondary hover:text-accent-cyan transition-colors duration-300 font-medium relative;
+  }
+  
+  .nav-link.active {
+    @apply text-accent-cyan;
+  }
+  
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-purple));
+    border-radius: 2px;
+  }
+  
+  .lang-btn {
+    @apply px-3 py-1 rounded-lg bg-dark-elevated hover:bg-accent-cyan/10 transition-all duration-300 text-2xl;
+  }
+  
+  .social-icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center
+           bg-dark-elevated border border-accent-cyan/20
+           hover:bg-accent-cyan hover:text-dark-deep hover:scale-110 hover:shadow-lg hover:shadow-accent-cyan/50
+           transition-all duration-300;
+  }
+}
+
+/* ==============================================
+   CUSTOM COMPONENTS
+   ============================================== */
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply px-8 py-4 rounded-xl font-semibold text-dark-deep
+           bg-gradient-to-r from-accent-cyan to-accent-purple
+           hover:scale-105 hover:shadow-2xl hover:shadow-accent-cyan/50
+           active:scale-95
+           transition-all duration-300;
+  }
+  
+  .btn-secondary {
+    @apply px-8 py-4 rounded-xl font-semibold
+           border-2 border-accent-cyan text-accent-cyan
+           hover:bg-accent-cyan hover:text-dark-deep
+           active:scale-95
+           transition-all duration-300;
+  }
+  
+  /* Cards */
+  .card {
+    @apply bg-dark-elevated rounded-2xl p-6
+           border border-accent-cyan/10
+           hover:border-accent-cyan/30
+           transition-all duration-300;
+  }
+  
+  /* Form Inputs */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-xl
+           bg-dark-elevated border border-accent-cyan/20
+           text-text-primary placeholder-text-tertiary
+           focus:outline-none focus:border-accent-cyan focus:ring-2 focus:ring-accent-cyan/20
+           transition-all duration-300;
+  }
+  
+  /* Section Titles */
+  .section-title {
+    @apply text-5xl md:text-6xl font-bold mb-8
+           bg-gradient-to-r from-accent-cyan to-accent-purple
+           bg-clip-text text-transparent;
+  }
+}
+
+/* ==============================================
+   BASE STYLES
+   ============================================== */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-accent-cyan), var(--color-accent-purple));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-accent-purple), var(--color-accent-cyan));
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent-cyan) var(--color-dark-deep);
+}
+
+/* ==============================================
+   ANIMATIONS
+   ============================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* ==============================================
+   NAVBAR SCROLL EFFECTS
+   (Navbar is always fixed & visible per design spec)
+   ============================================== */
+
+nav {
+  transition: background-color 0.3s ease;
+}
+
+/* ==============================================
+   RESPONSIVE TYPOGRAPHY
+   ============================================== */
+
+@media (max-width: 640px) {
+  .section-title {
+    @apply text-4xl;
+  }
+  
+  h1 {
+    @apply text-4xl;
+  }
+  
+  h2 {
+    @apply text-3xl;
+  }
+}
+
+/* ==============================================
+   PRINT STYLES
+   ============================================== */
+
+@media print {
+  nav, footer, #chat-bubble, #chat-modal {
+    display: none !important;
+  }
+  
+  .card {
+    border: 1px solid #333;
+  }
+}

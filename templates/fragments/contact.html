@@ -1,0 +1,255 @@
+<!-- Contact Section -->
+<section class="py-24 px-6">
+    <div class="max-w-3xl mx-auto">
+
+        <!-- Section Title -->
+        <h2 class="text-5xl md:text-6xl font-bold mb-8 text-gradient text-center">
+            {% if lang == 'pt' %}ENTRE EM CONTATO{% elif lang == 'es' %}PONTE EN CONTACTO{% else %}GET IN TOUCH{% endif %}
+        </h2>
+        <div class="w-32 h-1 bg-gradient-to-r from-accent-cyan to-transparent mb-12 mx-auto"></div>
+
+        <p class="text-text-secondary text-center text-lg mb-12">
+            {% if lang == 'pt' %}
+            Se você está procurando um desenvolvedor para seu próximo projeto ou só quer dizer olá, minha caixa de entrada está sempre aberta. Responderei o mais rápido possível!
+            {% elif lang == 'es' %}
+            Ya sea que estés buscando un desarrollador para tu próximo proyecto o simplemente quieras saludar, mi bandeja de entrada siempre está abierta. ¡Te responderé lo antes posible!
+            {% else %}
+            Whether you're looking for a developer for your next project or just want to say hi, my inbox is always open. I'll get back to you as soon as possible!
+            {% endif %}
+        </p>
+
+        <!-- Contact Form -->
+        <form id="contact-form" class="space-y-6">
+
+            <!-- Name & Email Row -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Name Input -->
+                <div>
+                    <label for="name" class="block text-sm font-medium mb-2 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4 text-accent-cyan"></i>
+                        {% if lang == 'pt' %}Nome *{% elif lang == 'es' %}Nombre *{% else %}Name *{% endif %}
+                    </label>
+                    <input type="text" id="name" name="name" required
+                        placeholder="{% if lang == 'pt' %}Seu nome completo{% elif lang == 'es' %}Tu nombre completo{% else %}Your full name{% endif %}"
+                        class="form-input">
+                </div>
+
+                <!-- Email Input -->
+                <div>
+                    <label for="email" class="block text-sm font-medium mb-2 flex items-center gap-2">
+                        <i data-lucide="mail" class="w-4 h-4 text-accent-cyan"></i>
+                        {% if lang == 'pt' %}E-mail *{% elif lang == 'es' %}Correo electrónico *{% else %}Email *{% endif %}
+                    </label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com"
+                        class="form-input">
+                </div>
+            </div>
+
+            <!-- Message Input -->
+            <div>
+                <label for="message" class="block text-sm font-medium mb-2 flex items-center gap-2">
+                    <i data-lucide="message-square" class="w-4 h-4 text-accent-cyan"></i>
+                    {% if lang == 'pt' %}Mensagem *{% elif lang == 'es' %}Mensaje *{% else %}Message *{% endif %}
+                </label>
+                <textarea id="message" name="message" rows="6" required
+                    placeholder="{% if lang == 'pt' %}Me conte sobre seu projeto ou apenas diga olá...{% elif lang == 'es' %}Cuéntame sobre tu proyecto o solo di hola...{% else %}Tell me about your project or just say hello...{% endif %}"
+                    class="form-input resize-none"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary w-full inline-flex items-center justify-center gap-2 relative">
+                <span id="button-text">{% if lang == 'pt' %}Enviar Mensagem{% elif lang == 'es' %}Enviar Mensaje{% else %}Send Message{% endif %}</span>
+                <i data-lucide="send" class="w-5 h-5"></i>
+
+                <!-- Loading Indicator -->
+                <div id="loading-indicator"
+                    class="htmx-indicator absolute inset-0 bg-accent-purple rounded-xl flex items-center justify-center">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="w-2 h-2 bg-white rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    </div>
+                </div>
+            </button>
+
+        </form>
+
+        <!-- Form Response Area -->
+        <div id="form-response" class="mt-6"></div>
+
+        <!-- Divider -->
+        <div class="relative my-12">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-accent-cyan/10"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="px-4 bg-dark-deep text-text-tertiary">{% if lang == 'pt' %}Ou entre em contato diretamente{% elif lang == 'es' %}O contáctame directamente{% else %}Or reach out directly{% endif %}</span>
+            </div>
+        </div>
+
+        <!-- Alternative Contact Methods -->
+        <div class="space-y-4">
+            <a href="mailto:matiasp.estigarribia@gmail.com"
+                class="card flex items-center gap-4 hover:border-accent-cyan hover:scale-105 transition-all duration-300 group">
+                <div
+                    class="w-12 h-12 rounded-full bg-dark-deep flex items-center justify-center text-accent-cyan group-hover:bg-accent-cyan group-hover:text-dark-deep transition-all">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold">{% if lang == 'pt' %}E-mail{% elif lang == 'es' %}Correo electrónico{% else %}Email{% endif %}</p>
+                    <p class="text-text-secondary text-sm">matiasp.estigarribia@gmail.com</p>
+                </div>
+                <i data-lucide="arrow-right"
+                    class="w-5 h-5 text-text-tertiary group-hover:text-accent-cyan transition-colors"></i>
+            </a>
+
+            <a href="https://www.linkedin.com/in/matias-p-estigarribia" target="_blank" rel="noopener noreferrer"
+                class="card flex items-center gap-4 hover:border-accent-cyan hover:scale-105 transition-all duration-300 group">
+                <div
+                    class="w-12 h-12 rounded-full bg-dark-deep flex items-center justify-center text-accent-cyan group-hover:bg-accent-cyan group-hover:text-dark-deep transition-all">
+                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold">LinkedIn</p>
+                    <p class="text-text-secondary text-sm">{% if lang == 'pt' %}Conecte-se comigo profissionalmente{% elif lang == 'es' %}Conéctate conmigo profesionalmente{% else %}Connect with me professionally{% endif %}</p>
+                </div>
+                <i data-lucide="external-link"
+                    class="w-5 h-5 text-text-tertiary group-hover:text-accent-cyan transition-colors"></i>
+            </a>
+
+            <button onclick="openChat()"
+                class="card flex items-center gap-4 hover:border-accent-cyan hover:scale-105 transition-all duration-300 group w-full text-left">
+                <div
+                    class="w-12 h-12 rounded-full bg-dark-deep flex items-center justify-center text-accent-cyan group-hover:bg-accent-cyan group-hover:text-dark-deep transition-all">
+                    <span class="text-2xl">🤖</span>
+                </div>
+                <div class="flex-1">
+                    <p class="font-semibold">{% if lang == 'pt' %}Converse com MatIAs AI{% elif lang == 'es' %}Chatea con MatIAs AI{% else %}Chat with MatIAs AI{% endif %}</p>
+                    <p class="text-text-secondary text-sm">{% if lang == 'pt' %}Pergunte qualquer coisa ao meu gêmeo digital!{% elif lang == 'es' %}¡Pregúntale cualquier cosa a mi gemelo digital!{% else %}Ask my digital twin anything!{% endif %}</p>
+                </div>
+                <i data-lucide="message-circle"
+                    class="w-5 h-5 text-text-tertiary group-hover:text-accent-cyan transition-colors"></i>
+            </button>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    (function () {
+        // ── i18n strings injected by Jinja2 ────────────────────────────────
+        const i18n = {
+            success_title: "{% if lang == 'pt' %}Mensagem enviada com sucesso!{% elif lang == 'es' %}¡Mensaje enviado con éxito!{% else %}Message sent successfully!{% endif %}",
+            success_body:  "{% if lang == 'pt' %}Obrigado por entrar em contato. Responderei em breve.{% elif lang == 'es' %}Gracias por contactarme. Te responderé pronto.{% else %}Thank you for reaching out. I'll get back to you soon.{% endif %}",
+            error_title:   "{% if lang == 'pt' %}Ops! Algo deu errado.{% elif lang == 'es' %}¡Ups! Algo salió mal.{% else %}Oops! Something went wrong.{% endif %}",
+            error_body:    "{% if lang == 'pt' %}Tente novamente ou entre em contato diretamente por e-mail.{% elif lang == 'es' %}Intenta de nuevo o contáctame directamente por correo electrónico.{% else %}Please try again or contact me directly via email.{% endif %}",
+            validation_alert: "{% if lang == 'pt' %}Por favor, preencha todos os campos obrigatórios.{% elif lang == 'es' %}Por favor, completa todos los campos requeridos.{% else %}Please fill in all required fields.{% endif %}",
+            email_alert:   "{% if lang == 'pt' %}Por favor, insira um endereço de e-mail válido.{% elif lang == 'es' %}Por favor, ingresa una dirección de correo electrónico válida.{% else %}Please enter a valid email address.{% endif %}"
+        };
+
+        const form = document.getElementById('contact-form');
+        const responseDiv = document.getElementById('form-response');
+        const indicator = document.getElementById('loading-indicator');
+        const buttonText = document.getElementById('button-text');
+
+        function showIndicator(on) {
+            indicator.style.display = on ? 'flex' : 'none';
+            buttonText.style.display = on ? 'none' : '';
+        }
+
+        function showResponse(html) {
+            responseDiv.innerHTML = html;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            // ── Client-side validation ──────────────────────────────────────
+            if (!name || !email || !message) {
+                alert(i18n.validation_alert);
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert(i18n.email_alert);
+                return;
+            }
+
+            // ── Submit as JSON ──────────────────────────────────────────────
+            showIndicator(true);
+            responseDiv.innerHTML = '';
+
+            try {
+                const res = await fetch('/api/v1/contactmessage/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message }),
+                });
+
+                if (res.ok) {
+                    form.reset();
+                    showResponse(`
+                        <div class="card bg-accent-green/10 border-accent-green/30 text-accent-green animate-fade-in">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                                <div>
+                                    <p class="font-semibold">${i18n.success_title}</p>
+                                    <p class="text-sm opacity-90">${i18n.success_body}</p>
+                                </div>
+                            </div>
+                        </div>`);
+                    setTimeout(() => { responseDiv.innerHTML = ''; }, 5000);
+                } else {
+                    throw new Error('Server error ' + res.status);
+                }
+            } catch (err) {
+                showResponse(`
+                    <div class="card bg-red-500/10 border-red-500/30 text-red-400 animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                            <div>
+                                <p class="font-semibold">${i18n.error_title}</p>
+                                <p class="text-sm opacity-90">${i18n.error_body}</p>
+                            </div>
+                        </div>
+                    </div>`);
+            } finally {
+                showIndicator(false);
+            }
+        });
+    })();
+</script>
+
+<style>
+    .htmx-indicator {
+        display: none;
+    }
+
+    .htmx-request .htmx-indicator {
+        display: flex;
+    }
+
+    .htmx-request #button-text {
+        display: none;
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+    }
+</style>

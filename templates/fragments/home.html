@@ -1,0 +1,123 @@
+<!-- Hero Section -->
+<section id="home" class="min-h-screen flex items-center justify-center px-6">
+    <div class="max-w-7xl w-full grid md:grid-cols-2 gap-12 items-center">
+
+        <!-- Left Column: Text Content -->
+        <div class="space-y-6 animate-fade-in">
+            <h1 class="text-6xl md:text-7xl font-bold leading-tight">
+                {{ profile.full_name }}
+            </h1>
+
+            {%- set hl = profile.headline.get(lang, profile.headline.get('en', {})) if profile.headline is mapping else {} -%}
+            <div class="space-y-2 text-xl text-text-secondary font-mono">
+                <p>
+                    <span class="text-accent-cyan">></span> System:
+                    <span class="text-text-primary">
+                        {{- hl.get('system', hl.get('System', '')) -}}
+                    </span>
+                </p>
+                <p>
+                    <span class="text-accent-cyan">></span> Status:
+                    <span class="text-accent-green">
+                        {{- hl.get('status', '') -}}
+                    </span>
+                </p>
+                <p>
+                    <span class="text-accent-cyan">></span>
+                    {{- hl.get('welcome', '') -}}
+                    <span class="animate-pulse">█</span>
+                </p>
+            </div>
+
+            <!-- CTAs -->
+            <div class="flex flex-wrap gap-4 pt-6">
+                <a href="/projects" hx-get="/projects" hx-target="#content" hx-swap="innerHTML" hx-push-url="true"
+                    class="btn-primary inline-flex items-center gap-2">
+                    {%- if lang == 'pt' -%}Explorar Projetos{%- elif lang == 'es' -%}Explorar Proyectos{%- else -%}Explore Projects{%- endif -%}
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+                <button onclick="openChat()" class="btn-secondary inline-flex items-center gap-2">
+                    {%- if lang == 'pt' -%}Conhecer MatIAs AI{%- elif lang == 'es' -%}Conocer MatIAs AI{%- else -%}Meet MatIAs AI{%- endif -%}
+                    <span class="text-2xl">✨</span>
+                </button>
+            </div>
+
+           
+        </div>
+
+        <!-- Right Column: Visual -->
+        <div class="relative flex justify-center">
+            <div class="relative w-full max-w-md aspect-square">
+                <!-- Neural Orb Container -->
+                <div
+                    class="absolute inset-0 rounded-full bg-gradient-to-br from-accent-cyan/20 to-accent-purple/20 blur-3xl animate-pulse-slow">
+                </div>
+
+                <!-- Center Orb -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div
+                        class="w-64 h-64 rounded-full bg-gradient-to-br from-accent-cyan/30 to-accent-purple/30 blur-2xl animate-pulse">
+                    </div>
+                </div>
+
+                <div
+                    class="relative w-full aspect-square flex items-center justify-center bg-audi-elevated/20 border border-audi-hint/20 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,217,255,0.05)]">
+                    <canvas id="neural-sphere" class="absolute inset-0 w-full h-full"></canvas>
+
+                    <div class="absolute inset-0 border border-audi-cyan/20 rounded-2xl pointer-events-none"></div>
+                </div>
+                <!-- Rotating Ring -->
+                <div class="absolute inset-0 border-2 border-accent-cyan/20 rounded-full animate-spin-slow"></div>
+
+                <!-- Inner Glow -->
+                <div class="absolute inset-1/4 border border-accent-purple/30 rounded-full"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <a href="/about" hx-get="/about" hx-target="#content" hx-swap="innerHTML" hx-push-url="true"
+            class="flex flex-col items-center text-text-tertiary hover:text-accent-cyan transition-colors">
+            <span class="text-sm mb-2">{%- if lang == 'pt' -%}Role para explorar{%- elif lang == 'es' -%}Desplázate para explorar{%- else -%}Scroll to explore{%- endif -%}</span>
+            <i data-lucide="chevron-down" class="w-6 h-6"></i>
+        </a>
+    </div>
+</section>
+
+<style>
+    @keyframes spin-slow {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-spin-slow {
+        animation: spin-slow 20s linear infinite;
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.8s ease-out;
+    }
+
+    .animate-pulse-slow {
+        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+</style>

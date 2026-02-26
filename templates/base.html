@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Matías P. Estigarribia - AI Developer & Full-Stack Engineer{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Full-Stack AI Developer specializing in intelligent web applications. FastAPI, React, LangChain, OpenAI, RAG systems.">
+    <meta name="keywords" content="AI Developer, Full-Stack Developer, FastAPI, Python, React, Machine Learning, LangChain, OpenAI">
+    <meta name="author" content="Matías P. Estigarribia">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Matías P. Estigarribia - AI Developer">
+    <meta property="og:description" content="Building intelligent systems that solve real problems">
+    <meta property="og:image" content="{{ url_for('static', path='images/og-image.jpg') }}">
+    <meta property="og:url" content="https://yourdomain.com">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Matías P. Estigarribia - AI Developer">
+    <meta name="twitter:description" content="Building intelligent systems that solve real problems">
+    <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.jpg') }}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <link href="{{ url_for('static', path='css/output.css') }}" rel="stylesheet">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='images/favicon.ico') }}">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-dark-deep text-text-primary font-sans antialiased overflow-x-hidden">
+    
+    <!-- Neural Network Background Canvas -->
+    <canvas id="neural-bg" class="fixed inset-0 -z-10 opacity-10 pointer-events-none"></canvas>
+    
+    <!-- Navigation (always fixed) -->
+    <nav class="fixed top-0 w-full z-50 bg-dark-deep/80 backdrop-blur-lg border-b border-accent-cyan/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="/" 
+               hx-get="/" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="text-2xl font-bold hover:opacity-80 transition-opacity">
+                MATÍAS P <span class="text-accent-cyan">ESTIGARRIBIA</span>
+            </a>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="/" 
+                   hx-get="/" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   class="nav-link">
+                    Home
+                </a>
+                <a href="/about" 
+                   hx-get="/about" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   class="nav-link">
+                    About
+                </a>
+                <a href="/skills-and-languages" 
+                   hx-get="/skills-and-languages" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   class="nav-link">
+                    Skills
+                </a>
+                <a href="/projects" 
+                   hx-get="/projects" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   class="nav-link">
+                    Projects
+                </a>
+                <a href="/experience" 
+                   hx-get="/experience" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   class="nav-link">
+                    Experience
+                </a>
+                <a href="/contact" 
+                   hx-get="/contact" 
+                   hx-target="#content" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="true"
+                   hx-vals="js:{lang: currentLanguage}"
+                   class="nav-link">
+                    Contact
+                </a>
+            </div>
+            
+            <!-- Language Switcher -->
+            <div class="hidden md:flex space-x-2">
+                <button onclick="setLanguage('en')" 
+                        class="lang-btn" 
+                        data-lang="en">
+                    🇺🇸
+                </button>
+                <button onclick="setLanguage('es')" 
+                        class="lang-btn" 
+                        data-lang="es">
+                    🇦🇷
+                </button>
+                <button onclick="setLanguage('pt')" 
+                        class="lang-btn" 
+                        data-lang="pt">
+                    🇧🇷
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button onclick="toggleMobileMenu()" 
+                    class="md:hidden text-text-primary hover:text-accent-cyan transition-colors"
+                    aria-label="Toggle mobile menu">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-mid border-t border-accent-cyan/10">
+            <a href="/" 
+               hx-get="/" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
+               onclick="toggleMobileMenu()">
+                Home
+            </a>
+            <a href="/about" 
+               hx-get="/about" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
+               onclick="toggleMobileMenu()">
+                About
+            </a>
+            <a href="/skills-and-languages" 
+               hx-get="/skills-and-languages" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
+               onclick="toggleMobileMenu()">
+                Skills
+            </a>
+            <a href="/projects" 
+               hx-get="/projects" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
+               onclick="toggleMobileMenu()">
+                Projects
+            </a>
+            <a href="/experience" 
+               hx-get="/experience" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
+               onclick="toggleMobileMenu()">
+                Experience
+            </a>
+            <a href="/contact" 
+               hx-get="/contact" 
+               hx-target="#content" 
+               hx-swap="innerHTML" 
+               hx-push-url="true"
+               hx-vals="js:{lang: currentLanguage}"
+               class="block px-6 py-3 hover:bg-dark-elevated transition-colors nav-link"
+               onclick="toggleMobileMenu()">
+                Contact
+            </a>
+            
+            <!-- Mobile Language Switcher -->
+            <div class="flex justify-center space-x-4 px-6 py-4 border-t border-accent-cyan/10">
+                <button onclick="setLanguage('en')" class="lang-btn" data-lang="en">🇺🇸</button>
+                <button onclick="setLanguage('es')" class="lang-btn" data-lang="es">🇦🇷</button>
+                <button onclick="setLanguage('pt')" class="lang-btn" data-lang="pt">🇧🇷</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content Area (HTMX swaps content here) -->
+    <main id="content" class="pt-20">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-accent-cyan/10 bg-dark-mid/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <!-- Column 1: Brand -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">
+                        MATÍAS P <span class="text-accent-cyan">ESTIGARRIBIA</span>
+                    </h3>
+                    <p class="text-text-secondary">
+                        AI Developer & Full-Stack Engineer building intelligent systems that solve real problems.
+                    </p>
+                </div>
+                
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/projects" hx-get="/projects" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Projects</a></li>
+                        <li><a href="/experience" hx-get="/experience" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Experience</a></li>
+                        <li><a href="/skills-and-languages" hx-get="/skills-and-languages" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Skills</a></li>
+                        <li><a href="/contact" hx-get="/contact" hx-target="#content" hx-swap="innerHTML" hx-push-url="true" hx-vals="js:{lang: currentLanguage}" class="text-text-secondary hover:text-accent-cyan transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 3: Connect -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/matiasestigarribia" target="_blank" rel="noopener noreferrer" class="social-icon">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/matias-p-estigarribia" target="_blank" rel="noopener noreferrer" class="social-icon">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </a>
+                        <a href="mailto:matiasp.estigarribia@gmail.com" class="social-icon">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-accent-cyan/10 text-center text-text-tertiary text-sm">
+                <p>&copy; 2026 Matías P. Estigarribia. Built with FastAPI, HTMX, Tailwind, Langchain & AI.</p>
+            </div>
+        </div>
+    </footer>
+    
+   
+    <!-- Chat Modal Container -->
+    <div id="chat-modal" class="hidden"></div>
+    
+    <!-- Scripts -->
+    <script src="{{ url_for('static', path='js/neural-bg.js') }}"></script>
+    <script src="{{ url_for('static', path='js/interactions.js') }}"></script>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+        
+        // ============================================
+        // LANGUAGE SWITCHER
+        // ============================================
+        
+        // currentLanguage must be declared before hx-vals references it
+        // URL param takes priority over localStorage (HTMX swaps pass lang via query string)
+        const _urlLang = new URLSearchParams(window.location.search).get('lang');
+        const _validLangs = ['en', 'es', 'pt'];
+        let currentLanguage = (_validLangs.includes(_urlLang) ? _urlLang : null)
+            || localStorage.getItem('language')
+            || 'en';
+        localStorage.setItem('language', currentLanguage);
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            
+            // Update active button state
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('bg-accent-cyan', 'text-dark-deep');
+                    btn.classList.remove('bg-dark-elevated');
+                } else {
+                    btn.classList.remove('bg-accent-cyan', 'text-dark-deep');
+                    btn.classList.add('bg-dark-elevated');
+                }
+            });
+            
+            // Update chat language input if present
+            const chatLangInput = document.getElementById('chat-language');
+            if (chatLangInput) {
+                chatLangInput.value = lang;
+            }
+            
+            // Reload the current page content with the new language via HTMX
+            const currentPath = window.location.pathname;
+            htmx.ajax('GET', currentPath + '?lang=' + lang, {
+                target: '#content',
+                swap: 'innerHTML'
+            });
+        }
+        
+        // Apply saved language on load (button styles)
+        (function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLanguage) {
+                    btn.classList.add('bg-accent-cyan', 'text-dark-deep');
+                    btn.classList.remove('bg-dark-elevated');
+                } else {
+                    btn.classList.remove('bg-accent-cyan', 'text-dark-deep');
+                    btn.classList.add('bg-dark-elevated');
+                }
+            });
+        })();
+        
+        // Open chat modal
+        function openChat() {
+            const chatModal = document.getElementById('chat-modal');
+            const chatBubble = document.getElementById('chat-bubble');
+            
+            // Load chat interface via HTMX if not already loaded
+            if (chatModal.innerHTML.trim() === '') {
+                htmx.ajax('GET', '/chat', {
+                    target: '#chat-modal',
+                    swap: 'innerHTML'
+                }).then(() => {
+                    chatModal.classList.remove('hidden');
+                    chatBubble.classList.add('hidden');
+                });
+            } else {
+                chatModal.classList.remove('hidden');
+                chatBubble.classList.add('hidden');
+            }
+        }
+        
+        // Close chat (called from chat modal)
+        function closeChat() {
+            document.getElementById('chat-modal').classList.add('hidden');
+            document.getElementById('chat-bubble').classList.remove('hidden');
+        }
+        
+        // HTMX after-swap event - re-initialize Lucide icons
+        document.body.addEventListener('htmx:afterSwap', function() {
+            lucide.createIcons();
+        });
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

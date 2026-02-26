@@ -1,0 +1,184 @@
+<!-- Project Detail Modal Content -->
+<div class="max-w-5xl mx-auto bg-dark-elevated rounded-2xl overflow-hidden relative" onclick="event.stopPropagation()">
+
+    <!-- Close Button -->
+    <button onclick="closeProjectModal(event)"
+        class="close-modal absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-dark-deep/80 backdrop-blur-sm border border-accent-cyan/20 flex items-center justify-center text-text-primary hover:bg-accent-cyan hover:text-dark-deep transition-all duration-300">
+        <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Image Gallery / Carousel -->
+    {% if project.images and project.images|length > 0 %}
+    <div class="relative bg-dark-deep">
+        <div class="swiper project-gallery">
+            <div class="swiper-wrapper">
+                {% for image in project.images %}
+                <div class="swiper-slide">
+                    {% if image.image_url.startswith('http') %}
+                    <img src="{{ image.image_url }}" alt="{{ project.title.get(lang, project.title.get('en', 'Project')) }}"
+                        class="w-full h-96 object-cover">
+                    {% else %}
+                    <img src="{{ url_for('static', path='images/projects/' + image.image_url) }}"
+                        alt="{{ project.title.get(lang, project.title.get('en', 'Project')) }}" class="w-full h-96 object-cover">
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Navigation -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Content -->
+    <div class="p-8 space-y-8">
+
+        <!-- Title & Description -->
+        <div>
+            <h2 class="text-4xl font-bold mb-4">{{ project.title.get(lang, project.title.get('en', 'Untitled Project')) }}</h2>
+
+            <div class="prose prose-invert max-w-none text-text-secondary">
+                {{ project.long_description|safe }}
+            </div>
+        </div>
+
+        <!-- Technologies Used -->
+        {% if project.skills and project.skills|length > 0 %}
+        <div>
+            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="code" class="w-6 h-6 text-accent-cyan"></i>
+                {% if lang == 'pt' %}Tecnologias Utilizadas{% elif lang == 'es' %}Tecnologías Utilizadas{% else %}Technologies Used{% endif %}
+            </h3>
+            <div class="flex flex-wrap gap-3">
+                {% for skill in project.skills %}
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-dark-deep border border-accent-cyan/20 rounded-lg hover:border-accent-cyan hover:scale-105 transition-all duration-300">
+                    <i class="{{ skill.icon_css_class }} text-2xl text-accent-cyan"></i>
+                    <span class="font-semibold">{{ skill.name }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Links -->
+        <div class="flex flex-wrap gap-4 pt-4 border-t border-accent-cyan/10">
+            {% if project.live_url %}
+            <a href="{{ project.live_url }}" target="_blank" rel="noopener noreferrer"
+                class="btn-primary inline-flex items-center gap-2">
+                <i data-lucide="external-link" class="w-5 h-5"></i>
+                {% if lang == 'pt' %}Ver Demo ao Vivo{% elif lang == 'es' %}Ver Demo en Vivo{% else %}View Live Demo{% endif %}
+            </a>
+            {% endif %}
+
+            {% if project.repo_url %}
+            <a href="{{ project.repo_url }}" target="_blank" rel="noopener noreferrer"
+                class="btn-secondary inline-flex items-center gap-2">
+                <i data-lucide="github" class="w-5 h-5"></i>
+                {% if lang == 'pt' %}Ver Código Fonte{% elif lang == 'es' %}Ver Código Fuente{% else %}View Source Code{% endif %}
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    // Initialize Swiper
+    const swiper = new Swiper('.project-gallery', {
+        loop: true,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+    });
+
+    // Re-initialize Lucide icons
+    lucide.createIcons();
+</script>
+
+<style>
+    /* Swiper custom styling */
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: var(--color-accent-cyan);
+    }
+
+    .swiper-pagination-bullet {
+        background: var(--color-text-tertiary);
+    }
+
+    .swiper-pagination-bullet-active {
+        background: var(--color-accent-cyan);
+    }
+
+    /* Prose styling for long description */
+    .prose {
+        color: var(--color-text-secondary);
+    }
+
+    .prose h1,
+    .prose h2,
+    .prose h3,
+    .prose h4 {
+        color: var(--color-text-primary);
+        font-weight: 700;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+    }
+
+    .prose p {
+        margin-bottom: 1em;
+        line-height: 1.7;
+    }
+
+    .prose ul,
+    .prose ol {
+        margin-left: 1.5em;
+        margin-bottom: 1em;
+    }
+
+    .prose li {
+        margin-bottom: 0.5em;
+    }
+
+    .prose strong {
+        color: var(--color-text-primary);
+        font-weight: 600;
+    }
+
+    .prose a {
+        color: var(--color-accent-cyan);
+        text-decoration: underline;
+    }
+
+    .prose a:hover {
+        color: var(--color-accent-purple);
+    }
+
+    .prose code {
+        background: var(--color-dark-deep);
+        padding: 0.2em 0.4em;
+        border-radius: 0.25em;
+        font-size: 0.9em;
+    }
+</style>

@@ -1,0 +1,115 @@
+<section class="py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="mb-32">
+            <h2 class="text-5xl md:text-6xl font-bold mb-6 tracking-tight text-gradient">
+                {% if lang == 'pt' %}COMUNICAÇÃO.{% elif lang == 'es' %}COMUNICACIÓN.{% else %}COMMUNICATION.{% endif %}
+            </h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-accent-cyan to-transparent mb-12"></div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                {% for spoken_lang in languages %}
+                {% set lang_name = spoken_lang.language_name.get(lang, spoken_lang.language_name.get('en', '')) %}
+                {% set level = spoken_lang.proficiency_level.get(lang, spoken_lang.proficiency_level.get('en', '')) %}
+                {% set percentage = '100' if level.lower() in ['native', 'nativo' ] else '90' %}
+
+                <div class="card hover:border-accent-cyan/50 hover:shadow-[0_0_20px_rgba(0,212,255,0.1)] transition-all duration-300">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="text-4xl">{{ spoken_lang.icon_code }}</div>
+                        <p class="text-accent-cyan text-sm uppercase tracking-widest font-semibold">{{ level }}</p>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-text-primary mb-6">{{ lang_name }}</h3>
+                    
+                    <div class="w-full bg-dark-mid rounded-full h-1 overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-accent-cyan to-accent-purple transition-all duration-1000" style="width: {{ percentage }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div>
+            <h2 class="text-5xl md:text-6xl font-bold mb-6 tracking-tight text-gradient">
+                {% if lang == 'pt' %}COMPETÊNCIAS.{% elif lang == 'es' %}COMPETENCIAS.{% else %}COMPETENCIES.{% endif %}
+            </h2>
+            <div class="w-32 h-1 bg-gradient-to-r from-accent-cyan to-transparent mb-12"></div>
+            
+            <div class="flex flex-wrap gap-3 mb-16">
+                <button onclick="filterSkills('All')"
+                        class="skill-tab px-6 py-2 rounded border border-accent-cyan bg-accent-cyan text-dark-deep text-sm uppercase tracking-widest font-bold transition-all"
+                        data-category="All">
+                    {% if lang == 'pt' %}Todas{% elif lang == 'es' %}Todas{% else %}All Core{% endif %}
+                </button>
+                <button onclick="filterSkills('Backend')" 
+                        class="skill-tab px-6 py-2 rounded border border-accent-cyan/20 bg-transparent text-text-tertiary text-sm uppercase tracking-widest font-semibold transition-all hover:border-accent-cyan/50 hover:text-text-primary"
+                        data-category="Backend">
+                    Backend
+                </button>
+                <button onclick="filterSkills('Frontend')" 
+                        class="skill-tab px-6 py-2 rounded border border-accent-cyan/20 bg-transparent text-text-tertiary text-sm uppercase tracking-widest font-semibold transition-all hover:border-accent-cyan/50 hover:text-text-primary"
+                        data-category="Frontend">
+                    Frontend
+                </button>
+                <button onclick="filterSkills('AI/ML')" 
+                        class="skill-tab px-6 py-2 rounded border border-accent-cyan/20 bg-transparent text-text-tertiary text-sm uppercase tracking-widest font-semibold transition-all hover:border-accent-cyan/50 hover:text-text-primary"
+                        data-category="AI/ML">
+                    AI/ML
+                </button>
+                <button onclick="filterSkills('DevOps')" 
+                        class="skill-tab px-6 py-2 rounded border border-accent-cyan/20 bg-transparent text-text-tertiary text-sm uppercase tracking-widest font-semibold transition-all hover:border-accent-cyan/50 hover:text-text-primary"
+                        data-category="DevOps">
+                    DevOps
+                </button>
+            </div>
+            
+            <div id="skills-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {% for skill in skills %}
+                <div class="skill-card flex flex-col items-center justify-center p-6 bg-dark-elevated border border-accent-cyan/10 rounded-lg group hover:border-accent-cyan/50 hover:bg-dark-mid hover:shadow-[0_0_20px_rgba(0,212,255,0.08)] transition-all duration-300"
+                     data-category="{{ skill.category }}">
+                    
+                    <i class="{{ skill.icon_css_class }} text-3xl mb-4 text-text-tertiary group-hover:text-accent-cyan transition-colors duration-300"></i>
+                    <p class="text-sm font-medium text-text-secondary group-hover:text-text-primary tracking-wide">{{ skill.name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+<script>
+function filterSkills(category) {
+    document.querySelectorAll('.skill-tab').forEach(tab => {
+        if (tab.dataset.category === category) {
+            tab.classList.remove('bg-transparent', 'text-text-tertiary', 'border-accent-cyan/20');
+            tab.classList.add('bg-accent-cyan', 'text-dark-deep', 'border-accent-cyan', 'font-bold');
+        } else {
+            tab.classList.add('bg-transparent', 'text-text-tertiary', 'border-accent-cyan/20');
+            tab.classList.remove('bg-accent-cyan', 'text-dark-deep', 'border-accent-cyan', 'font-bold');
+        }
+    });
+    
+    document.querySelectorAll('.skill-card').forEach(card => {
+        if (category === 'All' || card.dataset.category === category) {
+            card.style.display = 'flex';
+            card.classList.add('animate-fade-in');
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Initialize
+filterSkills('All');
+</script>
+
+<style>
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+}
+</style>

@@ -1,0 +1,152 @@
+<!-- About Section -->
+<section id="about" class="py-24 px-6">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Section Title -->
+        <h2 class="text-5xl md:text-6xl font-bold mb-8 text-gradient">
+            {% if lang == 'pt' %}SOBRE MIM{% elif lang == 'es' %}SOBRE MÍ{% else %}ABOUT ME{% endif %}
+        </h2>
+        <div class="w-32 h-1 bg-gradient-to-r from-accent-cyan to-transparent mb-12"></div>
+
+        <!-- Main Content Grid -->
+        <div class="grid md:grid-cols-3 gap-12 mb-12">
+
+            <!-- Profile Photo -->
+            <div class="relative group">
+                <div
+                    class="aspect-square rounded-2xl overflow-hidden border-2 border-accent-cyan/20 group-hover:border-accent-cyan/50 transition-all duration-300 glow-cyan">
+                    <img src="{{ url_for('static', path='images/profile_picture.png') }}" alt="{{ profile.full_name }}"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+            </div>
+
+            <!-- About Text -->
+            <div class="md:col-span-2 space-y-6 text-lg text-text-secondary">
+                <p class="leading-relaxed">
+                    {% if profile.summary_text is mapping %}
+                    {{ profile.summary_text.get(lang, profile.summary_text.get('en', '')) }}
+                    {% else %}
+                    {{ profile.summary_text }}
+                    {% endif %}
+                </p>
+
+                <!-- CV Downloads -->
+                <div class="pt-4">
+                    <h3 class="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-5 h-5 text-accent-cyan"></i>
+                        {% if lang == 'pt' %}Baixar Currículo{% elif lang == 'es' %}Descargar Currículum Vitae{% else %}Download Curriculum Vitae{% endif %}
+                    </h3>
+                    <div class="flex flex-wrap gap-4">
+                        {% if profile.cv_english %}
+                        <a href="{% if profile.cv_english.startswith('http') %}{{ profile.cv_english }}{% else %}{{ url_for('static', path='uploads/cvs/' + profile.cv_english) }}{% endif %}"
+                            download class="inline-flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300
+                                  {% if lang == 'en' %}
+                                  bg-accent-cyan/10 border-2 border-accent-cyan shadow-lg shadow-accent-cyan/20 text-accent-cyan
+                                  {% else %}
+                                  bg-dark-elevated border border-accent-cyan/20 hover:border-accent-cyan hover:bg-accent-cyan/10
+                                  {% endif %}">
+                            <span class="text-2xl">🇺🇸</span>
+                            <span class="font-semibold">English</span>
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if profile.cv_spanish %}
+                        <a href="{% if profile.cv_spanish.startswith('http') %}{{ profile.cv_spanish }}{% else %}{{ url_for('static', path='uploads/cvs/' + profile.cv_spanish) }}{% endif %}"
+                            download class="inline-flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300
+                                  {% if lang == 'es' %}
+                                  bg-accent-cyan/10 border-2 border-accent-cyan shadow-lg shadow-accent-cyan/20 text-accent-cyan
+                                  {% else %}
+                                  bg-dark-elevated border border-accent-cyan/20 hover:border-accent-cyan hover:bg-accent-cyan/10
+                                  {% endif %}">
+                            <span class="text-2xl">🇦🇷</span>
+                            <span class="font-semibold">Español</span>
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if profile.cv_portuguese %}
+                        <a href="{% if profile.cv_portuguese.startswith('http') %}{{ profile.cv_portuguese }}{% else %}{{ url_for('static', path='uploads/cvs/' + profile.cv_portuguese) }}{% endif %}"
+                            download class="inline-flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300
+                                  {% if lang == 'pt' %}
+                                  bg-accent-cyan/10 border-2 border-accent-cyan shadow-lg shadow-accent-cyan/20 text-accent-cyan
+                                  {% else %}
+                                  bg-dark-elevated border border-accent-cyan/20 hover:border-accent-cyan hover:bg-accent-cyan/10
+                                  {% endif %}">
+                            <span class="text-2xl">🇧🇷</span>
+                            <span class="font-semibold">Português</span>
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+
+            <div class="bg-audi-card/40 backdrop-blur-md border border-audi-hint/30 rounded-xl p-6 text-center group hover:border-audi-cyan/50 hover:shadow-[0_0_20px_rgba(0,217,255,0.15)] transition-all duration-500">
+                <i data-lucide="globe"
+                    class="w-10 h-10 mx-auto mb-4 text-audi-hint group-hover:text-audi-cyan transition-colors duration-500"></i>
+                <div class="text-4xl font-bold text-audi-text mb-2 tracking-tight group-hover:text-audi-cyan transition-colors">
+                    3
+                </div>
+                <div class="text-xs text-audi-muted tracking-widest uppercase font-semibold">{% if lang == 'pt' %}Idiomas Fluentes{% elif lang == 'es' %}Idiomas Fluidos{% else %}Fluent Languages{% endif %}</div>
+            </div>
+
+            <div class="bg-audi-card/40 backdrop-blur-md border border-audi-hint/30 rounded-xl p-6 text-center group hover:border-audi-cyan/50 hover:shadow-[0_0_20px_rgba(0,217,255,0.15)] transition-all duration-500">
+                <i data-lucide="award"
+                    class="w-10 h-10 mx-auto mb-4 text-audi-hint group-hover:text-audi-cyan transition-colors duration-500"></i>
+                <div class="text-4xl font-bold text-audi-text mb-2 tracking-tight group-hover:text-audi-cyan transition-colors">
+                    100<span class="text-2xl text-audi-cyan">%</span>
+                </div>
+                <div class="text-xs text-audi-muted tracking-widest uppercase font-semibold">{% if lang == 'pt' %}Tec. Análise Sist.{% elif lang == 'es' %}Tec. Análisis Sist.{% else %}A.S. in Systems Analysis{% endif %}</div>
+            </div>
+
+            <div class="bg-audi-card/40 backdrop-blur-md border border-audi-hint/30 rounded-xl p-6 text-center group hover:border-audi-cyan/50 hover:shadow-[0_0_20px_rgba(0,217,255,0.15)] transition-all duration-500">
+                <i data-lucide="book-open"
+                    class="w-10 h-10 mx-auto mb-4 text-audi-hint group-hover:text-audi-cyan transition-colors duration-500"></i>
+                <div class="text-4xl font-bold text-audi-text mb-2 tracking-tight group-hover:text-audi-cyan transition-colors">
+                    30<span class="text-2xl text-audi-cyan">%</span>
+                </div>
+                <div class="text-xs text-audi-muted tracking-widest uppercase font-semibold">{% if lang == 'pt' %}Bacharelado em S.I.{% elif lang == 'es' %}Licenciatura en S. I.{% else %}B.S. Info Systems{% endif %}</div>
+            </div>
+
+            <div class="bg-audi-card/40 backdrop-blur-md border border-audi-hint/30 rounded-xl p-6 text-center group hover:border-audi-cyan/50 hover:shadow-[0_0_20px_rgba(0,217,255,0.15)] transition-all duration-500">
+                <i data-lucide="layers" class="w-10 h-10 mx-auto mb-4 text-audi-hint group-hover:text-audi-cyan transition-colors duration-500"></i>
+                    <div class="text-3xl xl:text-4xl font-bold text-audi-text mb-2 tracking-tight group-hover:text-audi-cyan transition-colors">
+                        AI-Driven
+            </div>
+            <div class="text-[10px] md:text-xs text-audi-muted tracking-widest uppercase font-semibold">
+                {% if lang == 'pt' %}
+                    Soluções Full-Stack
+            {% elif lang == 'es' %}
+                Soluciones Full-Stack
+            {% else %}
+                Full-Stack Solutions
+            {% endif %}
+        </div>
+    </div>
+
+        </div>
+
+        <!-- Social Links Section -->
+        {% if profile.social_links %}
+        <div class="mt-12 pt-12 border-t border-accent-cyan/10">
+           
+           
+        </div>
+        {% endif %}
+
+        <!-- Call to Action -->
+        <div class="mt-12 text-center">
+            <button onclick="openChat()" class="btn-primary inline-flex items-center gap-2 cursor-pointer">
+                {% if lang == 'pt' %}Converse com MatIAs, meu gêmeo digital!{% elif lang == 'es' %}¡Chatea con MatIAs, mi gemelo digital!{% else %}Chat with MatIAs, my digital Twin!{% endif %}
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+    </div>
+</section>
