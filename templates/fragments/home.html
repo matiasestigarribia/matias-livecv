@@ -1,6 +1,6 @@
 <!-- Hero Section -->
-<section id="home" class="min-h-screen flex items-center justify-center px-6">
-    <div class="max-w-7xl w-full grid md:grid-cols-2 gap-12 items-center">
+<section id="home" class="min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
+    <div class="max-w-7xl w-full mx-auto grid md:grid-cols-2 gap-12 items-center">
 
         <!-- Left Column: Text Content -->
         <div class="space-y-6 animate-fade-in">
@@ -76,12 +76,12 @@
 
     </div>
 
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <a href="/about" hx-get="/about" hx-target="#content" hx-swap="innerHTML" hx-push-url="true"
+    <!-- Click Indicator -->
+    <div class="mt-12 mb-8 flex justify-center animate-bounce">
+        <a href="/about?lang={{ lang }}" hx-get="/about?lang={{ lang }}" hx-target="#content" hx-swap="innerHTML" hx-push-url="true"
             class="flex flex-col items-center text-text-tertiary hover:text-accent-cyan transition-colors">
-            <span class="text-sm mb-2">{%- if lang == 'pt' -%}Role para explorar{%- elif lang == 'es' -%}Desplázate para explorar{%- else -%}Scroll to explore{%- endif -%}</span>
-            <i data-lucide="chevron-down" class="w-6 h-6"></i>
+            <span class="text-sm mb-2 text-center px-4">{%- if lang == 'pt' -%}Clique para saber mais sobre mim{%- elif lang == 'es' -%}Clickeá para saber más de mí{%- else -%}Click to know more about me{%- endif -%}</span>
+            <i data-lucide="mouse-pointer-click" class="w-6 h-6"></i>
         </a>
     </div>
 </section>

@@ -139,19 +139,6 @@ function hideLoading() {
 // HTMX EVENT HANDLERS
 // ============================================
 
-// Show loading on HTMX requests
-document.body.addEventListener('htmx:beforeRequest', function (event) {
-    // Only show loader for page navigation, not chat
-    if (!event.detail.target.id.includes('chat')) {
-        showLoading();
-    }
-});
-
-// Hide loading when done
-document.body.addEventListener('htmx:afterSettle', function () {
-    hideLoading();
-});
-
 // Handle HTMX errors
 document.body.addEventListener('htmx:responseError', function (event) {
     hideLoading();

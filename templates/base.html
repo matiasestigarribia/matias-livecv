@@ -51,7 +51,7 @@
 
     <!-- Navigation (always fixed) -->
     <nav class="fixed top-0 w-full z-50 bg-dark-deep/80 backdrop-blur-lg border-b border-accent-cyan/10">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center gap-2" style="min-width:0">
             <!-- Logo -->
             <a href="/"
                hx-get="/"
@@ -59,7 +59,8 @@
                hx-swap="innerHTML"
                hx-push-url="true"
                hx-vals="js:{lang: currentLanguage}"
-               class="text-2xl font-bold hover:opacity-80 transition-opacity">
+               class="font-bold hover:opacity-80 transition-opacity shrink-0"
+               style="font-size:clamp(0.9rem,4vw,1.5rem);white-space:nowrap">
                 MATÍAS P <span class="text-accent-cyan">ESTIGARRIBIA</span>
             </a>
 
@@ -126,17 +127,17 @@
                 <button onclick="setLanguage('en')"
                         class="lang-btn"
                         data-lang="en">
-                    🇺🇸
+                    EN
                 </button>
                 <button onclick="setLanguage('es')"
                         class="lang-btn"
                         data-lang="es">
-                    🇦🇷
+                    ES
                 </button>
                 <button onclick="setLanguage('pt')"
                         class="lang-btn"
                         data-lang="pt">
-                    🇧🇷
+                    PT
                 </button>
             </div>
 
@@ -230,13 +231,13 @@
 
             <!-- Mobile Language Switcher -->
             <div class="px-4 pt-2 pb-5">
-                <p class="text-xs font-medium tracking-widest uppercase text-text-tertiary mb-3">
+                <p class="text-xs font-medium tracking-widest uppercase text-text-tertiary mb-3" data-i18n="language">
                     {% if lang == 'pt' %}Idioma{% elif lang == 'es' %}Idioma{% else %}Language{% endif %}
                 </p>
                 <div class="flex space-x-2">
-                    <button onclick="setLanguage('en')" class="lang-btn" data-lang="en">🇺🇸</button>
-                    <button onclick="setLanguage('es')" class="lang-btn" data-lang="es">🇦🇷</button>
-                    <button onclick="setLanguage('pt')" class="lang-btn" data-lang="pt">🇧🇷</button>
+                    <button onclick="setLanguage('en')" class="lang-btn" data-lang="en">EN</button>
+                    <button onclick="setLanguage('es')" class="lang-btn" data-lang="es">ES</button>
+                    <button onclick="setLanguage('pt')" class="lang-btn" data-lang="pt">PT</button>
                 </div>
             </div>
         </div>
@@ -311,7 +312,7 @@
 
             <!-- Bottom Bar -->
             <div class="pt-8 border-t border-accent-cyan/10 text-center text-text-tertiary text-sm">
-                <p>&copy; 2026 Matías P. Estigarribia. Built with FastAPI, HTMX, Tailwind, Langchain &amp; AI.</p>
+                <p><span data-i18n="copyright">{% if lang == 'pt' %}&copy; 2026 Matías Estigarribia. Todos os direitos reservados.{% elif lang == 'es' %}&copy; 2026 Matías Estigarribia. Todos los derechos reservados.{% else %}&copy; 2026 Matías Estigarribia. All rights reserved.{% endif %}</span></p>
             </div>
         </div>
     </footer>
@@ -341,10 +342,16 @@
             contact:    { en: 'Contact',       pt: 'Contato',       es: 'Contacto' },
             quickLinks: { en: 'Quick Links',   pt: 'Links Rápidos', es: 'Enlaces Rápidos' },
             connect:    { en: 'Connect',       pt: 'Conectar',      es: 'Conectar' },
+            language:   { en: 'Language',      pt: 'Idioma',        es: 'Idioma' },
+            copyright:  {
+                en: '\u00a9 2026 Mat\u00edas Estigarribia. All rights reserved.',
+                pt: '\u00a9 2026 Mat\u00edas Estigarribia. Todos os direitos reservados.',
+                es: '\u00a9 2026 Mat\u00edas Estigarribia. Todos los derechos reservados.',
+            },
             footerDesc: {
-                en: 'AI Developer & Full-Stack Engineer building intelligent systems that solve real problems.',
-                pt: 'Desenvolvedor AI & Engenheiro Full-Stack construindo sistemas inteligentes que resolvem problemas reais.',
-                es: 'Desarrollador AI & Ingeniero Full-Stack construyendo sistemas inteligentes que resuelven problemas reales.',
+                en: 'Full-cycle Software Developer. I build APIs, integrate LLMs, and ship intelligent AI systems that solve real problems.',
+                pt: 'Desenvolvedor de software de ciclo completo. Construo APIs, integro LLMs e entrego sistemas inteligentes de IA que resolvem problemas reais.',
+                es: 'Desarrollador de software de ciclo completo. Construyo APIs, integro LLMs y entrego sistemas inteligentes de IA que resuelven problemas reales.',
             },
         };
 
