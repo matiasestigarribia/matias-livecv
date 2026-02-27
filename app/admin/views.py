@@ -27,6 +27,7 @@ class CustomFileField(FileField):
 
 
 class UserAdmin(ModelView, model=User):
+    name = 'User'
     name_plural = 'Users'
     icon = 'fa-solid fa-users'
     can_delete = True
@@ -37,6 +38,7 @@ class UserAdmin(ModelView, model=User):
 
 
 class ProfileAdmin(ModelView, model=Profile):
+    name = 'Profile'
     name_plural = 'Profile Data'
     icon = 'fa-solid fa-user-tie'
     can_delete = True
@@ -75,6 +77,7 @@ class ProfileAdmin(ModelView, model=Profile):
                 data[field_name] = public_url
 
 class ExperienceAdmin(ModelView, model=Experience):
+    name = 'Experience'
     name_plural = 'Experiences'
     icon = 'fa-solid fa-briefcase'
     can_delete = True
@@ -89,6 +92,7 @@ class ExperienceAdmin(ModelView, model=Experience):
     form_excluded_columns = [Experience.created_at, Experience.updated_at]
 
 class SpokenLanguageAdmin(ModelView, model=SpokenLanguage):
+    name = 'Spoken Language'
     name_plural = 'Spoken Languages'
     icon = 'fa-solid fa-language'
     can_delete = True
@@ -103,6 +107,7 @@ class SpokenLanguageAdmin(ModelView, model=SpokenLanguage):
     form_excluded_columns = [SpokenLanguage.created_at, SpokenLanguage.updated_at]
 
 class ContactMessageAdmin(ModelView, model=ContactMessage):
+    name = 'Contact Message'
     name_plural = 'Contact Messages'
     icon = 'fa-solid fa-envelope'
     can_delete = True
@@ -114,6 +119,7 @@ class ContactMessageAdmin(ModelView, model=ContactMessage):
 
 
 class ProjectAdmin(ModelView, model=Project):
+    name = 'Project'
     name_plural = 'Projects'
     icon = 'fa-solid fa-laptop-code'
     can_delete = True
@@ -129,6 +135,7 @@ class ProjectAdmin(ModelView, model=Project):
     form_excluded_columns = [Project.created_at, Project.updated_at]
 
 class ProjectImageAdmin(ModelView, model=ProjectImage):
+    name = 'Project Image'
     name_plural = 'Project images'
     icon = 'fa-solid fa-images'
     can_delete = True
@@ -160,6 +167,7 @@ class ProjectImageAdmin(ModelView, model=ProjectImage):
             data['image_url'] = public_url
 
 class SkillAdmin(ModelView, model=Skill):
+    name = 'Skill'
     name_plural = 'Skills'
     icon = 'fa-solid fa-code'
     can_delete = True
@@ -170,6 +178,7 @@ class SkillAdmin(ModelView, model=Skill):
 
 
 class RagDocumentAdmin(ModelView, model=RagDocument):
+    name = 'RAG Document'
     name_plural = 'Rag Documents'
     icon = 'fa-solid fa-file'
     can_delete = True
@@ -184,6 +193,7 @@ class RagDocumentAdmin(ModelView, model=RagDocument):
     ]
 
 class ChatLogAdmin(ModelView, model=ChatLog):
+    name = 'Chat Log'
     name_plural = 'Chat logs'
     icon = 'fa-solid fa-comments'
     can_delete = True
@@ -192,6 +202,7 @@ class ChatLogAdmin(ModelView, model=ChatLog):
 
 
 class UploadedDocumentAdmin(ModelView, model=UploadedDocument):
+    name = 'RAG Upload'
     name_plural = 'Upload Rag Docs'
     icon = 'fa-solid fa-file-arrow-up'
     can_delete = True
