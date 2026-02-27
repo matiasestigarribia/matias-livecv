@@ -7,7 +7,8 @@ engine = create_async_engine(
     echo=False,
     pool_pre_ping=True,
     pool_recycle=300,
-    )
+    connect_args={"statement_cache_size": 0},  # Neon pooler (PgBouncer) compatibility
+)
 
 async def get_session():
     async with AsyncSession(engine, expire_on_commit=False) as session:

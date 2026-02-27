@@ -29,7 +29,8 @@ class CustomFileField(FileField):
 class UserAdmin(ModelView, model=User):
     name_plural = 'Users'
     icon = 'fa-solid fa-users'
-    
+    can_delete = True
+
     column_list = [User.id, User.username, User.email, User.created_at]
     
     column_searchable_list = [User.username, User.email]
@@ -38,7 +39,8 @@ class UserAdmin(ModelView, model=User):
 class ProfileAdmin(ModelView, model=Profile):
     name_plural = 'Profile Data'
     icon = 'fa-solid fa-user-tie'
-    
+    can_delete = True
+
     column_list = [Profile.id, Profile.full_name, Profile.updated_at]
     form_excluded_columns = [Profile.created_at, Profile.updated_at]
     
@@ -73,10 +75,10 @@ class ProfileAdmin(ModelView, model=Profile):
                 data[field_name] = public_url
 
 class ExperienceAdmin(ModelView, model=Experience):
-    
     name_plural = 'Experiences'
     icon = 'fa-solid fa-briefcase'
-    
+    can_delete = True
+
     column_list = [Experience.id, Experience.company_name, Experience.is_current, Experience.updated_at]
 
     form_widget_args = {
@@ -89,7 +91,8 @@ class ExperienceAdmin(ModelView, model=Experience):
 class SpokenLanguageAdmin(ModelView, model=SpokenLanguage):
     name_plural = 'Spoken Languages'
     icon = 'fa-solid fa-language'
-    
+    can_delete = True
+
     column_list = [SpokenLanguage.id, SpokenLanguage.language_name, SpokenLanguage.proficiency_level]
 
     form_widget_args = {
@@ -101,9 +104,9 @@ class SpokenLanguageAdmin(ModelView, model=SpokenLanguage):
 
 class ContactMessageAdmin(ModelView, model=ContactMessage):
     name_plural = 'Contact Messages'
-    
     icon = 'fa-solid fa-envelope'
-    
+    can_delete = True
+
     column_list = [ContactMessage.id, ContactMessage.name, ContactMessage.email,
                    ContactMessage.is_read]
     
@@ -112,9 +115,9 @@ class ContactMessageAdmin(ModelView, model=ContactMessage):
 
 class ProjectAdmin(ModelView, model=Project):
     name_plural = 'Projects'
-    
     icon = 'fa-solid fa-laptop-code'
-    
+    can_delete = True
+
     column_list = [Project.id, Project.title, Project.featured, Project.updated_at]
     
     form_widget_args = {
@@ -128,7 +131,8 @@ class ProjectAdmin(ModelView, model=Project):
 class ProjectImageAdmin(ModelView, model=ProjectImage):
     name_plural = 'Project images'
     icon = 'fa-solid fa-images'
-    
+    can_delete = True
+
     column_list = [
         ProjectImage.id,
         ProjectImage.project_id,
@@ -157,9 +161,9 @@ class ProjectImageAdmin(ModelView, model=ProjectImage):
 
 class SkillAdmin(ModelView, model=Skill):
     name_plural = 'Skills'
-    
     icon = 'fa-solid fa-code'
-    
+    can_delete = True
+
     column_list = [Skill.id, Skill.name, Skill.category]
     
     form_excluded_columns = [Skill.created_at, Skill.updated_at]
@@ -167,9 +171,9 @@ class SkillAdmin(ModelView, model=Skill):
 
 class RagDocumentAdmin(ModelView, model=RagDocument):
     name_plural = 'Rag Documents'
-    
     icon = 'fa-solid fa-file'
-    
+    can_delete = True
+
     column_list = [RagDocument.id, RagDocument.source, RagDocument.language, RagDocument.created_at]
 
     form_columns = [
@@ -181,16 +185,17 @@ class RagDocumentAdmin(ModelView, model=RagDocument):
 
 class ChatLogAdmin(ModelView, model=ChatLog):
     name_plural = 'Chat logs'
-    
     icon = 'fa-solid fa-comments'
-    
+    can_delete = True
+
     column_list = [ChatLog.id, ChatLog.user_message, ChatLog.bot_reply, ChatLog.created_at]
 
 
 class UploadedDocumentAdmin(ModelView, model=UploadedDocument):
     name_plural = 'Upload Rag Docs'
     icon = 'fa-solid fa-file-arrow-up'
-    
+    can_delete = True
+
     form_overrides = {'file_path': FileField}
     
     column_list = [UploadedDocument.id, UploadedDocument.filename, UploadedDocument.language]

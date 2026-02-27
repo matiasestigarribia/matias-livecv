@@ -43,7 +43,7 @@
             <h2 class="text-4xl font-bold mb-4">{{ project.title.get(lang, project.title.get('en', 'Untitled Project')) }}</h2>
 
             <div class="prose prose-invert max-w-none text-text-secondary">
-                {{ project.long_description|safe }}
+                {{ project.long_description.get(lang, project.long_description.get('en', ''))|replace('\n', '<br>')|safe }}
             </div>
         </div>
 
@@ -91,29 +91,31 @@
 <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<!-- Swiper JS: onload fires when CDN script finishes loading; fallback for cached case -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" onload="initProjectGallery()"></script>
 
 <script>
-    // Initialize Swiper
-    const swiper = new Swiper('.project-gallery', {
-        loop: true,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-        },
-    });
+    function initProjectGallery() {
+        new Swiper('.project-gallery', {
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+        });
+        lucide.createIcons();
+    }
 
-    // Re-initialize Lucide icons
-    lucide.createIcons();
+    // Swiper already cached from a previous open — onload won't fire again
+    if (typeof Swiper !== 'undefined') initProjectGallery();
 </script>
 
 <style>

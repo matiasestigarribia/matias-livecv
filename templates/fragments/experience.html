@@ -77,7 +77,7 @@
                 <div id="exp-{{ loop.index }}" 
                      class="hidden mt-6 pt-6 border-t border-accent-cyan/10">
                     <div class="prose prose-invert max-w-none text-text-secondary">
-                        {{ exp.description.get(lang, exp.description.get('en', ''))|safe }}
+                        {{ exp.description.get(lang, exp.description.get('en', ''))|replace('\n', '<br>')|safe }}
                     </div>
                 </div>
                 
