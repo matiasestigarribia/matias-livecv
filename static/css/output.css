@@ -4081,6 +4081,11 @@
       display: none;
     }
   }
+  .md\:h-96 {
+    @media (width >= 48rem) {
+      height: calc(var(--spacing) * 96);
+    }
+  }
   .md\:w-auto {
     @media (width >= 48rem) {
       width: auto;

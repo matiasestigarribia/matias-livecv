@@ -9,8 +9,8 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             {% for project in projects %}
-            <div class="group relative">
-                <div class="overflow-hidden cursor-pointer bg-dark-elevated border border-accent-cyan/10 rounded-xl transition-all duration-500 hover:border-accent-cyan/50 hover:shadow-[0_0_30px_rgba(0,212,255,0.1)] hover:-translate-y-1"
+            <div class="group relative h-full">
+                <div class="overflow-hidden cursor-pointer bg-dark-elevated border border-accent-cyan/10 rounded-xl transition-all duration-500 hover:border-accent-cyan/50 hover:shadow-[0_0_30px_rgba(0,212,255,0.1)] hover:-translate-y-1 h-full flex flex-col"
                     hx-get="/projects/{{ project.slug }}?lang={{ lang }}" hx-target="#project-detail-modal" hx-swap="innerHTML"
                     onclick="openProjectModal()">
 
@@ -46,7 +46,7 @@
                         {% endif %}
                     </div>
 
-                    <div class="p-8">
+                    <div class="p-8 flex flex-col flex-1">
                         <h3
                             class="text-xl font-bold mb-3 text-text-primary tracking-wide transition-colors group-hover:text-accent-cyan">
                             {{ project.title.get(lang, project.title.get('en', '')) or ('Projeto Sem Título' if lang == 'pt' else ('Proyecto Sin Título' if lang == 'es' else 'Untitled Project')) }}

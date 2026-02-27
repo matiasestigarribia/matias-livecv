@@ -16,10 +16,10 @@
                 <div class="swiper-slide">
                     {% if image.image_url.startswith('http') %}
                     <img src="{{ image.image_url }}" alt="{{ project.title.get(lang, project.title.get('en', 'Project')) }}"
-                        class="w-full h-96 object-cover">
+                        class="w-full h-64 md:h-96 object-contain">
                     {% else %}
                     <img src="{{ url_for('static', path='images/projects/' + image.image_url) }}"
-                        alt="{{ project.title.get(lang, project.title.get('en', 'Project')) }}" class="w-full h-96 object-cover">
+                        alt="{{ project.title.get(lang, project.title.get('en', 'Project')) }}" class="w-full h-64 md:h-96 object-contain">
                     {% endif %}
                 </div>
                 {% endfor %}
