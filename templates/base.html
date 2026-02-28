@@ -6,20 +6,20 @@
     <title>{% block title %}Matías P. Estigarribia - AI Developer & Full-Stack Engineer{% endblock %}</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Full-Stack AI Developer specializing in intelligent web applications. FastAPI, React, LangChain, OpenAI, RAG systems.">
-    <meta name="keywords" content="AI Developer, Full-Stack Developer, FastAPI, Python, React, Machine Learning, LangChain, OpenAI">
+    <meta name="description" content="Full-Cycle Software Developer specializing in intelligent web applications. FastAPI, React, LangChain, OpenAI, RAG systems.">
+    <meta name="keywords" content="AI Developer, Full-Stack Developer, FastAPI, Python, React, LangChain, OpenAI">
     <meta name="author" content="Matías P. Estigarribia">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Matías P. Estigarribia - AI Developer">
+    <meta property="og:title" content="Matías P. Estigarribia - Software Developer">
     <meta property="og:description" content="Building intelligent systems that solve real problems">
     <meta property="og:image" content="{{ url_for('static', path='images/og-image.jpg') }}">
     <meta property="og:url" content="https://yourdomain.com">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Matías P. Estigarribia - AI Developer">
+    <meta name="twitter:title" content="Matías P. Estigarribia - Software Developer">
     <meta name="twitter:description" content="Building intelligent systems that solve real problems">
     <meta name="twitter:image" content="{{ url_for('static', path='images/og-image.jpg') }}">
 
@@ -65,7 +65,7 @@
             </a>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden lg:flex items-center space-x-8">
                 <a href="/"
                    hx-get="/"
                    hx-target="#content"
@@ -123,7 +123,7 @@
             </div>
 
             <!-- Language Switcher (Desktop) -->
-            <div class="hidden md:flex space-x-2">
+            <div class="hidden lg:flex space-x-2">
                 <button onclick="setLanguage('en')"
                         class="lang-btn"
                         data-lang="en">
@@ -144,7 +144,7 @@
             <!-- Mobile Menu Toggle -->
             <button id="mobile-menu-toggle"
                     onclick="toggleMobileMenu()"
-                    class="md:hidden text-text-primary hover:text-accent-cyan transition-colors"
+                    class="lg:hidden text-text-primary hover:text-accent-cyan transition-colors"
                     aria-label="Toggle mobile menu"
                     aria-expanded="false"
                     aria-controls="mobile-menu">
@@ -154,7 +154,7 @@
 
         <!-- Mobile Menu: glassmorphism slide-in panel -->
         <div id="mobile-menu"
-             class="hidden md:hidden bg-dark-mid/95 backdrop-blur-md border-t border-accent-cyan/10">
+             class="hidden lg:hidden bg-dark-mid/95 backdrop-blur-md border-t border-accent-cyan/10">
 
             <!-- Nav links -->
             <nav class="px-4 pt-4 pb-2 space-y-1" aria-label="Mobile navigation">

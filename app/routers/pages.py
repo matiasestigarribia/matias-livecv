@@ -1,12 +1,12 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Request, Depends, HTTPException, Query, status
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from jinja2 import Environment, FileSystemLoader
-
-from sqlalchemy import select 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from datetime import datetime
 
 from app.core.database import get_session
 from app.models.profile import Profile
@@ -26,9 +26,11 @@ templates = Jinja2Templates(env=_jinja_env)
 
 SUPPORTED_LANGS = {'en', 'es', 'pt'}
 
+
 def is_htmx(request: Request) -> bool:
     """Check if request is from HTMX"""
     return 'hx-request' in request.headers
+
 
 def resolve_lang(lang: str) -> str:
     """Return a valid language code, defaulting to 'en'."""
@@ -48,16 +50,16 @@ async def home(
     stmt = select(Profile).limit(1)
     result = await db.execute(stmt)
     profile = result.scalar_one_or_none()
-    
+
     context = {
-        'request': request, 
+        'request': request,
         'profile': profile,
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/home.html', context)
-        
+
     context['active_fragment'] = 'fragments/home.html'
     return templates.TemplateResponse('index.html', context)
 
@@ -75,16 +77,16 @@ async def about(
     stmt = select(Profile).limit(1)
     result = await db.execute(stmt)
     profile = result.scalar_one_or_none()
-    
+
     context = {
-        'request': request, 
+        'request': request,
         'profile': profile,
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/about.html', context)
-        
+
     context['active_fragment'] = 'fragments/about.html'
     return templates.TemplateResponse('index.html', context)
 
@@ -106,16 +108,16 @@ async def projects_list(
     )
     result = await db.execute(stmt)
     projects = result.scalars().all()
-    
+
     context = {
-        'request': request, 
+        'request': request,
         'projects': projects,
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/projects.html', context)
-        
+
     context['active_fragment'] = 'fragments/projects.html'
     return templates.TemplateResponse('index.html', context)
 
@@ -139,25 +141,25 @@ async def project_detail(
             selectinload(Project.skills)
         )
     )
-    
+
     result = await db.execute(stmt)
     project = result.scalar_one_or_none()
-    
+
     if not project:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
+            status_code=status.HTTP_404_NOT_FOUND,
             detail='Project not found'
         )
 
     context = {
-        'request': request, 
+        'request': request,
         'project': project,
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/projects_expanded.html', context)
-        
+
     context['active_fragment'] = 'fragments/project_expanded.html'
     return templates.TemplateResponse('index.html', context)
 
@@ -173,20 +175,20 @@ async def experience(
 ):
     """Experience timeline page"""
     stmt = select(Experience).order_by(Experience.start_date.desc())
-    
+
     result = await db.execute(stmt)
     experiences = result.scalars().all()
-    
+
     context = {
-        'request': request, 
+        'request': request,
         'experiences': experiences,
         'today': datetime.now().date(),
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/experience.html', context)
-        
+
     context['active_fragment'] = 'fragments/experience.html'
     return templates.TemplateResponse('index.html', context)
 
@@ -203,20 +205,20 @@ async def skills_and_languages(
     """Skills & languages page"""
     skills_stmt = select(Skill).order_by(Skill.name)
     langs_stmt = select(SpokenLanguage).order_by(SpokenLanguage.proficiency_level.desc())
-    
+
     skills_result = await db.execute(skills_stmt)
     langs_result = await db.execute(langs_stmt)
-    
+
     context = {
         'request': request,
         'skills': skills_result.scalars().all(),
         'languages': langs_result.scalars().all(),
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/skills_languages.html', context)
-        
+
     context['active_fragment'] = 'fragments/skills_languages.html'
     return templates.TemplateResponse('index.html', context)
 
@@ -234,10 +236,10 @@ async def contact_form(
         'request': request,
         'lang': resolve_lang(lang)
     }
-    
+
     if is_htmx(request):
         return templates.TemplateResponse('fragments/contact.html', context)
-        
+
     context['active_fragment'] = 'fragments/contact.html'
     return templates.TemplateResponse('index.html', context)
 

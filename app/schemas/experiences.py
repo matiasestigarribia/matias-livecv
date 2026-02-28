@@ -1,5 +1,4 @@
 from datetime import datetime, date
-
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -7,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ExperiencePublicSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: int
     company_name: str
     role: Dict[str, str]

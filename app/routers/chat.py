@@ -31,15 +31,15 @@ async def ask_digital_twin(
 ):
     """
     Main chat endpoint for MatIAs digital twin.
-    
+
     Handles:
     - Language validation (only en, es, pt supported)
     - Digital twin response generation
     - Conversation logging (with graceful failure)
-    
+
     Returns the bot's response even if logging fails.
     """
-    
+
     try:
         # Get response from digital twin (will raise UnsupportedLanguageError if invalid)
         actual_reply = await get_digital_twin_response(
@@ -47,7 +47,7 @@ async def ask_digital_twin(
             language=payload.language,
             db=db
         )
-        
+
         # Try to log the conversation (but don't fail if this breaks)
         try:
             chat_log = ChatLog(
@@ -57,16 +57,16 @@ async def ask_digital_twin(
             )
             db.add(chat_log)
             await db.commit()
-        
+
         except Exception as db_error:
             # Log the database error but don't fail the request
             print(f"⚠️  Failed to save chat log to database: {db_error}")
             # Rollback to prevent hanging transactions
             await db.rollback()
             # Continue - user still gets their response
-        
+
         return ChatResponseSchema(reply=actual_reply)
-    
+
     except UnsupportedLanguageError as e:
         # Handle unsupported language gracefully - return 400 Bad Request
         raise HTTPException(
@@ -78,15 +78,15 @@ async def ask_digital_twin(
                 "supported_languages": ["en", "es", "pt"]
             }
         )
-    
+
     except HTTPException:
         # Re-raise HTTP exceptions (like 400, 404, etc.)
         raise
-    
+
     except Exception as e:
         # Log unexpected errors for debugging
         print(f"❌ Unexpected error in chat endpoint: {e}")
-        
+
         # Return generic error message (don't expose internal details)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

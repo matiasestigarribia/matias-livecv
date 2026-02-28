@@ -11,6 +11,7 @@ from app.schemas.experiences import ExperiencePublicSchema
 
 router = APIRouter()
 
+
 @router.get(
     path='/',
     status_code=status.HTTP_200_OK,
@@ -22,5 +23,5 @@ async def list_experiences(
 ):
     query = select(Experience).order_by(Experience.display_order)
     result = await db.execute(query)
-    
+
     return result.scalars().all()

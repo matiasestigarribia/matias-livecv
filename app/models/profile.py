@@ -9,7 +9,7 @@ from app.models import Base
 
 class Profile(Base):
     __tablename__ = 'profile'
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     full_name: Mapped[str]
     headline: Mapped[dict] = mapped_column(type_=JSONB)

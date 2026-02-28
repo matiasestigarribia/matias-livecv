@@ -29,7 +29,7 @@ from app.admin.views import (
 from app.core.database import engine, get_session
 from app.core.rate_limit import limiter
 from app.routers import (
-    contact_messages, 
+    contact_messages,
     experiences,
     profile,
     projects,
@@ -46,7 +46,7 @@ app = FastAPI(
 )
 
 app.mount('/static', StaticFiles(directory='static'), name='static')
-app.state.limiter= limiter
+app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
@@ -126,16 +126,13 @@ admin.add_view(RagDocumentAdmin)
 admin.add_view(UploadedDocumentAdmin)
 
 
-
-
 @app.get('/health')
 async def health_check(db: AsyncSession = Depends(get_session)):
     """
-    Hit every 4-5 mins by an external Cron job to prevent 
+    Hit every 4-5 mins by an external Cron job to prevent
     Cold Starts on both Cloud Run (Server) and Neon (Database).
     """
     try:
-        # The magic line that forces the database to respond
         await db.execute(text("SELECT 1"))
         return {
             "status": "online",
@@ -143,7 +140,6 @@ async def health_check(db: AsyncSession = Depends(get_session)):
             "message": "System nominal. Server and Database are warm."
         }
     except Exception as e:
-        # If Neon is down or connection strings are wrong, you'll see it here
         return {
             "status": "degraded",
             "database": "disconnected",

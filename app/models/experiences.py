@@ -9,7 +9,7 @@ from app.models import Base
 
 class Experience(Base):
     __tablename__ = 'experiences'
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     company_name: Mapped[str]
     role: Mapped[dict] = mapped_column(type_=JSONB)

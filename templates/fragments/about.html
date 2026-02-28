@@ -12,7 +12,7 @@
         <div class="grid md:grid-cols-3 gap-12 mb-12">
 
             <!-- Profile Photo -->
-            <div class="relative group">
+            <div class="relative group max-w-xs mx-auto md:max-w-none">
                 <div
                     class="aspect-square rounded-2xl overflow-hidden border-2 border-accent-cyan/20 group-hover:border-accent-cyan/50 transition-all duration-300 glow-cyan">
                     <img src="{{ url_for('static', path='images/profile_picture.png') }}" alt="{{ profile.full_name }}"
@@ -45,7 +45,6 @@
                                   {% else %}
                                   bg-dark-elevated border border-accent-cyan/20 hover:border-accent-cyan hover:bg-accent-cyan/10
                                   {% endif %}">
-                            <span class="text-2xl">🇺🇸</span>
                             <span class="font-semibold">English</span>
                             <i data-lucide="download" class="w-4 h-4"></i>
                         </a>
@@ -59,7 +58,6 @@
                                   {% else %}
                                   bg-dark-elevated border border-accent-cyan/20 hover:border-accent-cyan hover:bg-accent-cyan/10
                                   {% endif %}">
-                            <span class="text-2xl">🇦🇷</span>
                             <span class="font-semibold">Español</span>
                             <i data-lucide="download" class="w-4 h-4"></i>
                         </a>
@@ -73,7 +71,6 @@
                                   {% else %}
                                   bg-dark-elevated border border-accent-cyan/20 hover:border-accent-cyan hover:bg-accent-cyan/10
                                   {% endif %}">
-                            <span class="text-2xl">🇧🇷</span>
                             <span class="font-semibold">Português</span>
                             <i data-lucide="download" class="w-4 h-4"></i>
                         </a>

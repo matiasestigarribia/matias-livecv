@@ -17,10 +17,9 @@ project_skills = Table(
 )
 
 
-
 class Project(Base):
     __tablename__ = 'projects'
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     slug: Mapped[str]
     title: Mapped[dict] = mapped_column(type_=JSONB)

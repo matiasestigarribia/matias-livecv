@@ -1,9 +1,9 @@
 [project]
 name = "matias-live-cv"
-version = "0.1.0"
-description = ""
+version = "1.0.0"
+description = "This is a website that initially was born as a live cv idea, that turned into a website and a live cv with a rag chatbot to be able to be available 24-7"
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "Matias Pedro Estigarribia",email = "matiasp.estigarribia@gmail.com"}
 ]
 requires-python = ">=3.13,<4.0"
 dependencies = [

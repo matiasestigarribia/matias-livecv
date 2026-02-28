@@ -77,18 +77,18 @@ rag_chain = prompt_template | robust_llm | StrOutputParser()
 # ============================================================================
 
 GREETING_MESSAGES = {
-    'en': """Hi! I'm MatIAs, Matías Estigarribia's digital twin. 
+    'en': """Hi! I'm MatIAs, Matías Estigarribia's digital twin.
 
 I'm here to answer your questions about my professional experience, technical skills, projects, and background. Whether you're a recruiter, a potential client, or just curious about my work, feel free to ask me anything!
 
 What would you like to know?""",
-    
+
     'es': """¡Hola! Soy MatIAs, el gemelo digital de Matías Estigarribia.
 
 Estoy aquí para responder tus preguntas sobre mi experiencia profesional, habilidades técnicas, proyectos y trayectoria. No importa si sos reclutador, cliente potencial, o simplemente un entusiasta curioso por mi trabajo, ¡preguntame lo que quieras!
 
 ¿Qué te gustaría saber?""",
-    
+
     'pt': """Olá! Sou MatIAs, o gêmeo digital de Matías Estigarribia.
 
 Estou aqui para responder as suas perguntas sobre minha experiência profissional, habilidades técnicas, projetos e trajetória. Seja você recrutador, cliente em potencial, ou apenas curioso sobre meu trabalho, fique à vontade para perguntar!
@@ -140,25 +140,25 @@ LLM_ERROR_MESSAGES = {
 def validate_language(language: str) -> str:
     """
     Validates that the language is supported.
-    
+
     Args:
         language: Language code to validate
-        
+
     Returns:
         Validated language code (lowercase)
-        
+
     Raises:
         UnsupportedLanguageError: If language is not supported
     """
     language = language.lower().strip()
-    
+
     if language not in SUPPORTED_LANGUAGES:
         print(f"⚠️  Invalid language requested: {language}")
         raise UnsupportedLanguageError(
             language=language,
             message=UNSUPPORTED_LANGUAGE_MESSAGE
         )
-    
+
     return language
 
 
@@ -168,10 +168,10 @@ def is_greeting(query: str) -> bool:
         'hi', 'hello', 'hey', 'hola', 'ola', 'olá',
         'good morning', 'good afternoon', 'good evening',
         'buenos días', 'buenas tardes', 'buenas noches',
-        'bom dia', 'boa tarde', 'boa noite' 
+        'bom dia', 'boa tarde', 'boa noite'
     ]
     query_lower = query.lower().strip()
-    
+
     # Check if it's JUST a greeting (not "hi, what's your experience with Python?")
     return query_lower in greetings or (
         any(greeting in query_lower for greeting in greetings) and len(query.split()) <= 3
@@ -191,13 +191,13 @@ def should_block_query(query: str) -> tuple[bool, str | None]:
         'write this code', 'debug this', 'fix this code', 'solve this problem for me',
         'stock price', 'bitcoin price', 'crypto price',
         'news about', 'latest news', 'current events',
-        
+
         # Spanish (Includes unaccented versions for robust matching)
         'clima', 'pronóstico', 'pronostico', 'receta para', 'receta de', 'cocinar un', 'hornear un',
-        'recomendación de película', 'recomendacion de pelicula', 'qué película', 'que pelicula', 
-        'qué serie', 'que serie', 'recomendación de juego', 'recomendacion de juego', 
+        'recomendación de película', 'recomendacion de pelicula', 'qué película', 'que pelicula',
+        'qué serie', 'que serie', 'recomendación de juego', 'recomendacion de juego',
         'resultado del partido', 'marcador', 'quién ganó', 'quien gano',
-        'escribe este código', 'escribe este codigo', 'escribime un', 'depurar esto', 
+        'escribe este código', 'escribe este codigo', 'escribime un', 'depurar esto',
         'arregla este código', 'arregla este codigo', 'resuelve este problema', 'resolvé este',
         'precio de las acciones', 'cotización', 'cotizacion', 'precio del bitcoin', 'precio de cripto',
         'noticias sobre', 'últimas noticias', 'ultimas noticias', 'actualidad',
@@ -213,11 +213,11 @@ def should_block_query(query: str) -> tuple[bool, str | None]:
     ]
 
     query_lower = query.lower()
-    
+
     for indicator in hard_off_topic:
         if indicator in query_lower:
             return True, "That's outside the scope of our conversation."
-    
+
     return False, None
 
 
@@ -238,41 +238,41 @@ async def get_digital_twin_response(
 ) -> str:
     """
     Generates a response as Matías's digital twin.
-    
+
     Args:
         query: The user's question
         language: Language code ('en', 'es', 'pt')
         db: Database session
         chat_history: Optional conversation history
-    
+
     Returns:
         The digital twin's response
-        
+
     Raises:
         UnsupportedLanguageError: If language is not supported
     """
-    
+
     # ========================================================================
     # STEP 0: Validate language (will raise exception if invalid)
     # ========================================================================
     validated_language = validate_language(language)
-    
-    
+
+
     # ========================================================================
     # STEP 1: Handle greetings
     # ========================================================================
     if is_greeting(query) and not chat_history:
         return GREETING_MESSAGES.get(validated_language, GREETING_MESSAGES['en'])
-    
-    
+
+
     # ========================================================================
     # STEP 2: Pre-filter off-topic queries
     # ========================================================================
     should_block, reason = should_block_query(query)
     if should_block:
         return OFF_TOPIC_MESSAGES.get(validated_language, OFF_TOPIC_MESSAGES['en'])
-    
-    
+
+
     # ========================================================================
     # STEP 3: Generate embedding and search for relevant context
     # ========================================================================
@@ -282,7 +282,7 @@ async def get_digital_twin_response(
         # Fallback if embedding fails
         print(f"❌ Embedding error: {e}")
         return EMBEDDING_ERROR_MESSAGES.get(validated_language, EMBEDDING_ERROR_MESSAGES['en'])
-    
+
     # Search ONLY for documents in the validated language (STRICT filter)
     stmt = (
         select(RagDocument)
@@ -291,18 +291,18 @@ async def get_digital_twin_response(
         .order_by(RagDocument.embedding.cosine_distance(query_vector))
         .limit(5)
     )
-    
+
     result = await db.execute(stmt)
     docs = result.scalars().all()
-    
+
     # Build context from retrieved documents
     if not docs:
         # No context found - cannot answer (ZERO HALLUCINATION)
         return NO_CONTEXT_MESSAGES.get(validated_language, NO_CONTEXT_MESSAGES['en'])
-    
+
     context_text = '\n\n---\n\n'.join([doc.content for doc in docs])
-    
-    
+
+
     # ========================================================================
     # STEP 4: Convert chat history to LangChain message format
     # ========================================================================
@@ -313,8 +313,8 @@ async def get_digital_twin_response(
                 history_messages.append(HumanMessage(content=msg['content']))
             elif msg['role'] == 'assistant':
                 history_messages.append(AIMessage(content=msg['content']))
-    
-    
+
+
     # ========================================================================
     # STEP 5: Generate response using RAG chain
     # ========================================================================
@@ -325,7 +325,7 @@ async def get_digital_twin_response(
             'chat_history': history_messages if history_messages else []
         })
         return response
-    
+
     except Exception as e:
         # Graceful error handling
         print(f"❌ LLM error: {e}")
@@ -466,7 +466,7 @@ async def stream_digital_twin_response(
 def get_initial_greeting(language: str = 'en') -> str:
     """
     Returns the initial greeting message for a new conversation.
-    
+
     Raises:
         UnsupportedLanguageError: If language is not supported
     """
@@ -484,16 +484,16 @@ async def process_and_embed_document(file_bytes: bytes, filename: str, language:
     Serverless-safe: Uses a temporary file that is immediately cleaned up.
     """
     print(f"🧠 Starting background processing for {filename}...")
-    
+
     # Validate language before processing
     try:
         validated_language = validate_language(language)
     except UnsupportedLanguageError:
         print(f"⚠️  Invalid language '{language}' for document. Defaulting to 'en'")
         validated_language = 'en'
-    
+
     ext = os.path.splitext(filename)[1].lower()
-    
+
     # 2. NEW: Create a secure, temporary file just for LangChain to read
     with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as temp_file:
         temp_file.write(file_bytes)
@@ -511,21 +511,21 @@ async def process_and_embed_document(file_bytes: bytes, filename: str, language:
 
         # Push the heavy synchronous file reading to a background thread
         docs = await asyncio.to_thread(loader.load)
-        
+
         # Configure text splitter for optimal chunk size
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=800, 
+            chunk_size=800,
             chunk_overlap=100
         )
-        
+
         # Push the heavy text splitting to a background thread as well
         chunks = await asyncio.to_thread(text_splitter.split_documents, docs)
-        
+
         # Connect to the database and save the vectors
         async with AsyncSession(engine) as session:
             for chunk in chunks:
                 vector = await embeddings.aembed_query(chunk.page_content)
-                
+
                 new_doc = RagDocument(
                     source=filename, # Save the real filename, not the ugly temp name!
                     content=chunk.page_content,
@@ -534,10 +534,10 @@ async def process_and_embed_document(file_bytes: bytes, filename: str, language:
                     active=True
                 )
                 session.add(new_doc)
-                
+
             await session.commit()
             print(f"✅ Background processing complete! {len(chunks)} vectors added to Neon for language '{validated_language}'.")
-            
+
     finally:
         # 3. CRITICAL: Always delete the temp file, even if the AI crashes!
         if os.path.exists(temp_filepath):

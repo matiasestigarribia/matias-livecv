@@ -1,5 +1,5 @@
-import os
 import asyncio
+import os
 
 from sqladmin import ModelView
 from wtforms import FileField
@@ -33,7 +33,7 @@ class UserAdmin(ModelView, model=User):
     can_delete = True
 
     column_list = [User.id, User.username, User.email, User.created_at]
-    
+
     column_searchable_list = [User.username, User.email]
 
 
@@ -45,13 +45,13 @@ class ProfileAdmin(ModelView, model=Profile):
 
     column_list = [Profile.id, Profile.full_name, Profile.updated_at]
     form_excluded_columns = [Profile.created_at, Profile.updated_at]
-    
+
     form_overrides = {
         'cv_spanish': FileField,
         'cv_portuguese': FileField,
         'cv_english': FileField,
     }
-    
+
     form_widget_args = {
         'headline': {'rows': 5},
         'about_text': {'rows': 10},
@@ -61,20 +61,21 @@ class ProfileAdmin(ModelView, model=Profile):
 
     async def on_model_change(self, data, model, is_created, request):
         cv_fields = ['cv_english', 'cv_portuguese', 'cv_spanish']
-        
+
         for field_name in cv_fields:
             if data.get(field_name) and hasattr(data[field_name], 'filename'):
                 upload_file = data[field_name]
                 content = await upload_file.read()
-                
+
                 public_url = await upload_file_to_r2(
                     file_bytes=content,
                     folder='documents',
                     file_name=upload_file.filename,
                     content_type='application/pdf'
                 )
-                
+
                 data[field_name] = public_url
+
 
 class ExperienceAdmin(ModelView, model=Experience):
     name = 'Experience'
@@ -91,6 +92,7 @@ class ExperienceAdmin(ModelView, model=Experience):
 
     form_excluded_columns = [Experience.created_at, Experience.updated_at]
 
+
 class SpokenLanguageAdmin(ModelView, model=SpokenLanguage):
     name = 'Spoken Language'
     name_plural = 'Spoken Languages'
@@ -106,6 +108,7 @@ class SpokenLanguageAdmin(ModelView, model=SpokenLanguage):
 
     form_excluded_columns = [SpokenLanguage.created_at, SpokenLanguage.updated_at]
 
+
 class ContactMessageAdmin(ModelView, model=ContactMessage):
     name = 'Contact Message'
     name_plural = 'Contact Messages'
@@ -114,7 +117,7 @@ class ContactMessageAdmin(ModelView, model=ContactMessage):
 
     column_list = [ContactMessage.id, ContactMessage.name, ContactMessage.email,
                    ContactMessage.is_read]
-    
+
     form_excluded_columns = [ContactMessage.created_at, ContactMessage.updated_at]
 
 
@@ -125,7 +128,7 @@ class ProjectAdmin(ModelView, model=Project):
     can_delete = True
 
     column_list = [Project.id, Project.title, Project.featured, Project.updated_at]
-    
+
     form_widget_args = {
         'title': {'rows': 5},
         'short_description': {'rows': 5},
@@ -133,6 +136,7 @@ class ProjectAdmin(ModelView, model=Project):
     }
 
     form_excluded_columns = [Project.created_at, Project.updated_at]
+
 
 class ProjectImageAdmin(ModelView, model=ProjectImage):
     name = 'Project Image'
@@ -150,11 +154,11 @@ class ProjectImageAdmin(ModelView, model=ProjectImage):
 
     form_overrides = {'image_url': FileField}
     form_excluded_columns = [ProjectImage.id, ProjectImage.created_at, ProjectImage.updated_at]
-    
+
     async def on_model_change(self, data, model, is_created, request):
         if data.get('image_url') and hasattr(data['image_url'], 'filename'):
             upload_file = data['image_url']
-            
+
             webp_bytes, new_filename = await optimize_image_bytes(upload_file)
 
             public_url = await upload_file_to_r2(
@@ -163,8 +167,9 @@ class ProjectImageAdmin(ModelView, model=ProjectImage):
                 file_name=new_filename,
                 content_type='image/webp'
             )
-            
+
             data['image_url'] = public_url
+
 
 class SkillAdmin(ModelView, model=Skill):
     name = 'Skill'
@@ -173,7 +178,7 @@ class SkillAdmin(ModelView, model=Skill):
     can_delete = True
 
     column_list = [Skill.id, Skill.name, Skill.category]
-    
+
     form_excluded_columns = [Skill.created_at, Skill.updated_at]
 
 
@@ -186,11 +191,12 @@ class RagDocumentAdmin(ModelView, model=RagDocument):
     column_list = [RagDocument.id, RagDocument.source, RagDocument.language, RagDocument.created_at]
 
     form_columns = [
-        RagDocument.source, 
-        RagDocument.content, 
-        RagDocument.language, 
+        RagDocument.source,
+        RagDocument.content,
+        RagDocument.language,
         RagDocument.active
     ]
+
 
 class ChatLogAdmin(ModelView, model=ChatLog):
     name = 'Chat Log'
@@ -208,31 +214,30 @@ class UploadedDocumentAdmin(ModelView, model=UploadedDocument):
     can_delete = True
 
     form_overrides = {'file_path': FileField}
-    
+
     column_list = [UploadedDocument.id, UploadedDocument.filename, UploadedDocument.language]
-    
+
     form_columns = [
         UploadedDocument.filename,
         UploadedDocument.file_path,
         UploadedDocument.language
     ]
-    
+
     async def on_model_change(self, data, model, is_created, request):
         if is_created and data.get("file_path") and hasattr(data["file_path"], "filename"):
             upload_file = data["file_path"]
             content = await upload_file.read()
-            
+
             public_url = await upload_file_to_r2(
                 file_bytes=content,
                 folder='ragdocs',
                 file_name=upload_file.filename,
                 content_type=upload_file.content_type or 'application/pdf'
             )
-            
+
             data['file_path'] = public_url
             data['filename'] = upload_file.filename
-            
-            
+
             asyncio.create_task(
                 process_and_embed_document(
                     file_bytes=content,
@@ -240,4 +245,3 @@ class UploadedDocumentAdmin(ModelView, model=UploadedDocument):
                     language=data.get('language', 'en')
                 )
             )
-            

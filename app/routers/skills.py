@@ -1,7 +1,6 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, status
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
@@ -10,6 +9,7 @@ from app.schemas.skills import SkillPublicSchema
 
 
 router = APIRouter()
+
 
 @router.get(
     path='/',
@@ -20,8 +20,8 @@ router = APIRouter()
 async def list_skills(
     db: AsyncSession = Depends(get_session)
 ):
-    
+
     query = select(Skill).order_by(Skill.display_order)
     result = await db.execute(query)
-    
+
     return result.scalars().all()

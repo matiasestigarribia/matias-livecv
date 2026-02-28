@@ -9,7 +9,7 @@ from app.models import Base
 
 class SpokenLanguage(Base):
     __tablename__ = 'spoken_languages'
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     language_name: Mapped[dict] = mapped_column(type_=JSONB)
     proficiency_level: Mapped[dict] = mapped_column(type_=JSONB)
