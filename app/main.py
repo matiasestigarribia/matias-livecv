@@ -9,8 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqladmin import Admin
-
+from app.admin.admin import UrlAwareAdmin
 from app.admin.auth import authentication_backend
 from app.admin.views import (
     ContactMessageAdmin,
@@ -106,7 +105,7 @@ app.include_router(
     tags=['Frontend routes']
 )
 
-admin = Admin(
+admin = UrlAwareAdmin(
     app=app,
     engine=engine,
     authentication_backend=authentication_backend,

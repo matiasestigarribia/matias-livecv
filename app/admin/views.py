@@ -1,9 +1,7 @@
 import asyncio
-import os
 
 from sqladmin import ModelView
 from wtforms import FileField
-from starlette.datastructures import UploadFile
 
 from app.models.contact_messages import ContactMessage
 from app.models.experiences import Experience
@@ -19,11 +17,6 @@ from app.models.chat_logs import ChatLog
 from app.services.ai_service import process_and_embed_document
 from app.services.image_service import optimize_image_bytes
 from app.services.storage_service import upload_file_to_r2
-
-
-class CustomFileField(FileField):
-    def process_data(self, value):
-        self.data = None
 
 
 class UserAdmin(ModelView, model=User):
@@ -44,7 +37,22 @@ class ProfileAdmin(ModelView, model=Profile):
     can_delete = True
 
     column_list = [Profile.id, Profile.full_name, Profile.updated_at]
-    form_excluded_columns = [Profile.created_at, Profile.updated_at]
+
+    # CV file fields are included in both create and edit forms.
+    # UrlAwareAdmin._handle_form_data (see app/admin/admin.py) passes the stored
+    # URL string through unchanged when the user leaves the file input empty,
+    # so on_model_change can detect it and skip the upload, preserving the value.
+    # FileInputWidget renders <p>Currently: {url}</p> on the edit GET automatically.
+    form_create_rules = [
+        'full_name', 'headline', 'about_text', 'summary_text',
+        'cv_english', 'cv_spanish', 'cv_portuguese',
+        'social_links', 'terminal_theme',
+    ]
+    form_edit_rules = [
+        'full_name', 'headline', 'about_text', 'summary_text',
+        'cv_english', 'cv_spanish', 'cv_portuguese',
+        'social_links', 'terminal_theme',
+    ]
 
     form_overrides = {
         'cv_spanish': FileField,
@@ -63,18 +71,35 @@ class ProfileAdmin(ModelView, model=Profile):
         cv_fields = ['cv_english', 'cv_portuguese', 'cv_spanish']
 
         for field_name in cv_fields:
-            if data.get(field_name) and hasattr(data[field_name], 'filename'):
-                upload_file = data[field_name]
-                content = await upload_file.read()
+            value = data.get(field_name)
 
-                public_url = await upload_file_to_r2(
-                    file_bytes=content,
-                    folder='documents',
-                    file_name=upload_file.filename,
-                    content_type='application/pdf'
-                )
+            if value is None:
+                # Field absent from form (shouldn't happen but guard it).
+                continue
 
-                data[field_name] = public_url
+            if isinstance(value, str):
+                # UrlAwareAdmin passed the existing URL string through unchanged
+                # (empty upload on edit). Leave it as-is so the DB value is preserved.
+                continue
+
+            # It's an UploadFile — check whether the user actually sent bytes.
+            if not hasattr(value, 'read'):
+                continue
+
+            content = await value.read()
+            if not content:
+                # Empty file input on create — store None.
+                data[field_name] = None
+                continue
+
+            public_url = await upload_file_to_r2(
+                file_bytes=content,
+                folder='documents',
+                file_name=value.filename,
+                content_type='application/pdf'
+            )
+
+            data[field_name] = public_url
 
 
 class ExperienceAdmin(ModelView, model=Experience):
@@ -153,22 +178,32 @@ class ProjectImageAdmin(ModelView, model=ProjectImage):
     ]
 
     form_overrides = {'image_url': FileField}
-    form_excluded_columns = [ProjectImage.id, ProjectImage.created_at, ProjectImage.updated_at]
+    # image_url is stored as a URL string. UrlAwareAdmin._handle_form_data passes
+    # it through as a plain string on empty upload (edit), so on_model_change can
+    # distinguish "no new file" (str) from "new file uploaded" (UploadFile).
+    form_create_rules = ['project_id', 'image_url', 'is_cover', 'is_video', 'display_order']
+    form_edit_rules = ['project_id', 'image_url', 'is_cover', 'is_video', 'display_order']
 
     async def on_model_change(self, data, model, is_created, request):
-        if data.get('image_url') and hasattr(data['image_url'], 'filename'):
-            upload_file = data['image_url']
+        value = data.get('image_url')
 
-            webp_bytes, new_filename = await optimize_image_bytes(upload_file)
+        if value is None or isinstance(value, str):
+            # No new file uploaded (str = existing URL passed through by UrlAwareAdmin).
+            return
 
-            public_url = await upload_file_to_r2(
-                file_bytes=webp_bytes,
-                folder='projects',
-                file_name=new_filename,
-                content_type='image/webp'
-            )
+        if not hasattr(value, 'read'):
+            return
 
-            data['image_url'] = public_url
+        webp_bytes, new_filename = await optimize_image_bytes(value)
+
+        public_url = await upload_file_to_r2(
+            file_bytes=webp_bytes,
+            folder='projects',
+            file_name=new_filename,
+            content_type='image/webp'
+        )
+
+        data['image_url'] = public_url
 
 
 class SkillAdmin(ModelView, model=Skill):
@@ -217,31 +252,40 @@ class UploadedDocumentAdmin(ModelView, model=UploadedDocument):
 
     column_list = [UploadedDocument.id, UploadedDocument.filename, UploadedDocument.language]
 
-    form_columns = [
-        UploadedDocument.filename,
-        UploadedDocument.file_path,
-        UploadedDocument.language
-    ]
+    # file_path stored as a URL string. UrlAwareAdmin._handle_form_data passes the
+    # URL through as a plain string on empty upload, so on_model_change can detect
+    # whether a new file was provided (UploadFile) or not (str, skip upload).
+    form_create_rules = ['filename', 'file_path', 'language']
+    form_edit_rules = ['filename', 'file_path', 'language']
 
     async def on_model_change(self, data, model, is_created, request):
-        if is_created and data.get("file_path") and hasattr(data["file_path"], "filename"):
-            upload_file = data["file_path"]
-            content = await upload_file.read()
+        value = data.get("file_path")
 
-            public_url = await upload_file_to_r2(
+        if value is None or isinstance(value, str):
+            # No new file uploaded (str = existing URL passed through by UrlAwareAdmin).
+            return
+
+        if not hasattr(value, "filename"):
+            return
+
+        content = await value.read()
+        if not content:
+            return
+
+        public_url = await upload_file_to_r2(
+            file_bytes=content,
+            folder='ragdocs',
+            file_name=value.filename,
+            content_type=value.content_type or 'application/pdf'
+        )
+
+        data['file_path'] = public_url
+        data['filename'] = value.filename
+
+        asyncio.create_task(
+            process_and_embed_document(
                 file_bytes=content,
-                folder='ragdocs',
-                file_name=upload_file.filename,
-                content_type=upload_file.content_type or 'application/pdf'
+                filename=value.filename,
+                language=data.get('language', 'en')
             )
-
-            data['file_path'] = public_url
-            data['filename'] = upload_file.filename
-
-            asyncio.create_task(
-                process_and_embed_document(
-                    file_bytes=content,
-                    filename=upload_file.filename,
-                    language=data.get('language', 'en')
-                )
-            )
+        )

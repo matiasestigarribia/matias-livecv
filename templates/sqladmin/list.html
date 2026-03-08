@@ -54,8 +54,7 @@
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% if model_view.can_delete %}
                     <a class="dropdown-item" id="action-delete" href="#" data-name="{{ model_view.name }}"
-                      data-url="{{ url_for('admin:delete', identity=model_view.identity) }}" data-bs-toggle="modal"
-                      data-bs-target="#modal-delete">Delete selected items</a>
+                      data-url="{{ url_for('admin:delete', identity=model_view.identity) }}">Delete selected items</a>
                     {% endif %}
                     {% for custom_action, label in model_view._custom_actions_in_list.items() %}
                     {% if custom_action in model_view._custom_actions_confirmation %}
@@ -311,28 +310,60 @@
 
 {% block tail %}
 <script>
-// Fix: Bootstrap 5 programmatic modal show does not set event.relatedTarget.
-// The upstream main.js bulk-delete handler calls $('#modal-delete').modal('show')
-// after setting data attributes on #action-delete, but relatedTarget ends up null.
-// We replace the shown.bs.modal handler entirely to fall back to #action-delete
-// when relatedTarget is absent.
+// Fix: The upstream main.js bulk-delete handler calls $('#modal-delete').modal('show')
+// after setting data on #action-delete. We replace both the shown.bs.modal handler
+// and the delete-button click handler to ensure the URL is always read correctly.
+
+// Track the pending delete URL so we don't depend on attr() timing.
+var _pendingDeleteUrl = "";
+
 $(document).off('shown.bs.modal', '#modal-delete');
 $(document).on('shown.bs.modal', '#modal-delete', function (event) {
-  var element = event.relatedTarget
-    ? $(event.relatedTarget)
-    : $('#action-delete');
+  var element;
+  if (event.relatedTarget) {
+    // Per-row delete: Bootstrap triggered with relatedTarget = the trash icon.
+    element = $(event.relatedTarget);
+    _pendingDeleteUrl = element.data("url") || element.attr("data-url") || "";
+  } else {
+    // Bulk delete: jQuery called modal('show') programmatically after setting
+    // the URL with ?pks=... on #action-delete via .data().
+    element = $('#action-delete');
+    _pendingDeleteUrl = element.data("url") || element.attr("data-url") || "";
+  }
 
   var name = element.data("name");
   var pk = element.data("pk");
-
   var pkDisplay = Array.isArray(pk) ? pk.join(", ") : pk;
   var label = name || "record";
 
   $("#modal-delete-text").text(
     "This will permanently delete " + label + " " + (pkDisplay || "") + " ?"
   );
+  // Also set the attr as a backup.
+  $("#modal-delete-button").attr("data-url", _pendingDeleteUrl);
+});
 
-  $("#modal-delete-button").attr("data-url", element.data("url"));
+// Replace the delete-button click handler from main.js with one that uses
+// _pendingDeleteUrl as primary source and attr as fallback.
+$(document).off('click', '#modal-delete-button');
+$(document).on('click', '#modal-delete-button', function () {
+  var url = _pendingDeleteUrl || $(this).attr('data-url');
+  if (!url) {
+    alert('No delete URL found. Please try again.');
+    return;
+  }
+  $.ajax({
+    url: url,
+    method: 'DELETE',
+    success: function (result) {
+      _pendingDeleteUrl = "";
+      window.location.href = result;
+    },
+    error: function (request, status, error) {
+      _pendingDeleteUrl = "";
+      alert('Delete failed: ' + (request.responseText || error));
+    }
+  });
 });
 </script>
 {% endblock %}

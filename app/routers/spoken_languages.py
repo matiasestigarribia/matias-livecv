@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_session
@@ -20,7 +21,7 @@ router = APIRouter()
 async def list_spoken_languages(
     db: AsyncSession = Depends(get_session),
 ):
-    query = select(SpokenLanguage).order_by(SpokenLanguage.display_order)
+    query = select(SpokenLanguage).order_by(SpokenLanguage.id)
     result = await db.execute(query)
 
     return result.scalars().all()
