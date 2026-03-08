@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -9,8 +9,8 @@ class SkillPublicSchema(BaseModel):
 
     id: int
     name: str
-    icon_css_class: str
-    category: str
+    icon_css_class: Optional[str] = None
+    category: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -8,9 +8,9 @@ class SpokenLanguagePublicSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    language_name: Dict[str, str]
-    proficiency_level: Dict[str, str]
-    icon_code: Optional[dict]
+    language_name: Dict[str, Any]
+    proficiency_level: Dict[str, Any]
+    icon_code: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

@@ -1,9 +1,19 @@
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
 from app.schemas.skills import SkillPublicSchema
+
+
+class ProjectImagePublicSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    image_url: str
+    is_cover: bool
+    is_video: bool
+    display_order: int
 
 
 class ProjectPublicSchema(BaseModel):
@@ -11,11 +21,10 @@ class ProjectPublicSchema(BaseModel):
 
     id: int
     slug: str
-    title: Dict[str, str]
-    short_description: Dict[str, str]
-    long_description: Dict[str, str]
-    image_filename: str
-    gallery_filenames: List[str]
+    title: Dict[str, Any]
+    short_description: Dict[str, Any]
+    long_description: Dict[str, Any]
+    images: List[ProjectImagePublicSchema] = []
 
     repo_url: Optional[str]
     live_url: Optional[str]
